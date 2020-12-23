@@ -1,0 +1,12 @@
+{
+    "name": "autoload/namespacer",
+    "require": {
+    	"phpunit/phpunit": "8.5.13",
+    	"nesbot/carbon": "2.43.0"
+    },
+    "autoload": {
+    	"psr-4": {
+    		"optimy\\": "./"
+    	}
+    }
+}
