@@ -6,11 +6,44 @@ use optimy\app\models\Model;
 
 class Blog extends Model
 {
-	private $blogId;
-	private $userId;
-	private	$title;
-	private	$content;
-	private	$filename;
-	private $type;
-	private $createdAt;
+	public $userid;
+	public $title;
+	public $content;
+	public $filename;
+	public $category;
+	public $createdAt;
+
+	public function rules()
+	{
+		return [
+			"userid" => [
+				"type" => "hidden",
+				"required" => true
+			],
+			"title" => [
+				"type" => "string",
+				"required" => true,
+				"min" => "3",
+				"max" => "50"
+			],
+			"content" => [
+				"type" => "text",
+				"required" => true,
+				"min" => 100,
+				"max" => 3000
+			],
+			"filename" => [
+				"type" => "string",
+				"required" => false	
+			],
+			"category" => [
+				"type" => "string",
+				"required" => true	
+			],
+			"created_at" => [
+				"type" => "date",
+				"required" => false		
+			]
+		];
+	}
 }

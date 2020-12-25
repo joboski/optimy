@@ -8,7 +8,6 @@ class Config
 	{
 		if ($path) {
 			$config = $GLOBALS['config'];
-			// var_dump($config);
 			$arrayPath = explode("/", $path);
 
 			foreach ($arrayPath as $value) {

@@ -26,7 +26,6 @@ class Renderer
 
 	public function content($view, $params = [])
 	{
-		Helper::pre($params);
 		if (!is_null($params)) {
 			// Helper::pre($params);
 			foreach ($params as $key => $value) {

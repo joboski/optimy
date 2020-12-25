@@ -2,7 +2,6 @@
 
 namespace optimy\app\core;
 
-use optimy\app\core\Helper;
 use optimy\app\core\Config;
 use optimy\app\core\Renderer;
 use optimy\app\core\Application;
@@ -58,7 +57,6 @@ class Router
 
 			Application::$app->setController($controller);
 			$callback[0] = $controller;		
-			// Helper::pre($this->request);
 		}
 		
 		return call_user_func($callback, $this->request);

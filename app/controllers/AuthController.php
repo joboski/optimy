@@ -33,7 +33,7 @@ class AuthController extends Controller
 	{
 		if ($request->isPost()) {
 			if ($this->service->register($request->body())) {
-				return "success";
+				return Helper::pre("controller success");
 			}
 			return $this->view("register", ["model" => $this->service->model()]);
 		}

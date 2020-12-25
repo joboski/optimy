@@ -3,19 +3,12 @@
 namespace optimy\app\core;
 
 use optimy\app\core\Config;
-use optimy\app\core\Helper;
 use optimy\app\core\Input;
 
 class Request
 {
-	public function __construct()
-	{
-		Helper::pre("Constructing Request");
-	}
-
 	public function path()
 	{
-		// Helper::dump("Testing path");
 		$base_url= Config::get("base_url"); // get the define base url on the env
 
 		$path = str_replace($base_url, "", $_SERVER['REQUEST_URI']) ?? "/";
@@ -53,7 +46,6 @@ class Request
 	public function body()
 	{
 		// Helper::pre($_POST);
-
 		$method = $this->method();
 
 		$body = Input::clean($method);
