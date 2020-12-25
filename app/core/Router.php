@@ -57,8 +57,7 @@ class Router
 			$controller = new $callback[0];
 
 			Application::$app->setController($controller);
-			$callback[0] = $controller;
-			
+			$callback[0] = $controller;		
 			// Helper::pre($this->request);
 		}
 		

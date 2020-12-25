@@ -3,6 +3,7 @@
 namespace optimy\app\services;
 
 use optimy\app\models\User;
+use optimy\app\models\Model;
 use optimy\app\core\Helper;
 
 class UserService 
@@ -19,10 +20,10 @@ class UserService
 		$this->model->load($data);
 
 		if ($this->model->validate() && $this->loaded()) {
-			return "success!";
+			return true;
 		}
 
-		Helper::dump($this->model->errors);
+		return false;
 	}
 
 // Let the service call the model and not the controller

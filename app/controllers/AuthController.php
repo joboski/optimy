@@ -31,12 +31,15 @@ class AuthController extends Controller
 
 	public function register(Request $request)
 	{
-		$this->setLayout('auth');
-
 		if ($request->isPost()) {
-			return $this->service->register($request->body());
+			if ($this->service->register($request->body())) {
+				return "success";
+			}
+			return $this->view("register", ["model" => $this->service->model()]);
 		}
 		
+		$this->setLayout('auth');
+
 		return $this->view("register", ["model" => $this->service->model()]);
 	}
 }

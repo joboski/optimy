@@ -2,11 +2,14 @@
 
 namespace optimy\app\core;
 
+use optimy\app\core\Helper;
+
 class Input
 {
 
 	private static function filter($body, $input)
 	{
+		Helper::pre($body);
 		foreach ($body as $key => $value) {
 			$body[$key] = filter_input($input, $key, FILTER_SANITIZE_SPECIAL_CHARS);
 		}

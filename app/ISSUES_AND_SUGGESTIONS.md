@@ -7,6 +7,7 @@
 - Too many code repetition on the PHP and HTML files.
 - Tightly coupled codes, controller and model and view is written on a single file
 - Unreuseable codes.
+- Unscalable, has no proper scaffolding.
 - Hard to maintain since changes on the code would easily break the application
 - No error checking and can be hack through sql injection on the form inputs. 
 

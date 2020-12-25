@@ -28,4 +28,3 @@ $GLOBALS["config"] = array(
      *	]
 	*/
 );
-

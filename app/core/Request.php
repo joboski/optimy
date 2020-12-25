@@ -52,7 +52,7 @@ class Request
 	 */
 	public function body()
 	{
-		Helper::pre($_POST);
+		// Helper::pre($_POST);
 
 		$method = $this->method();
 

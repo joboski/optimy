@@ -16,7 +16,7 @@ class Field
 		$this->model = $model;
 		$this->attribute = $attribute;
 		$this->errors = $this->model->errors;
-		Helper::pre($this->errors);
+		// Helper::pre($this->errors);
 	}
 
 	public function __toString()
@@ -35,4 +35,3 @@ class Field
 		);
 	}
 }
-
