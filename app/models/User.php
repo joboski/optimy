@@ -3,7 +3,6 @@
 namespace optimy\app\models;
 
 use optimy\app\models\Model;
-use optimy\app\core\Helper;
 
 class User extends Model
 {	
@@ -40,6 +39,7 @@ class User extends Model
 			],
 			"confirmPassword" => [
 				"type" => "match",
+				"match" => "password",
 				"required" => true,
 			]
 		];

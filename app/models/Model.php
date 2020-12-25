@@ -2,15 +2,13 @@
 
 namespace optimy\app\models;
 
-use optimy\app\core\Helper;
-
 abstract class Model
 {
 	public const RULE_TYPE = 'type';
 	public const RULE_REQUIRED = 'required';
 	public const RULE_EMAIL = 'email';
 	public const RULE_STRING = "string";
-	public const RULE_NUMERIC = "numeric";
+	public const RULE_NUMERIC = "number";
 	public const RULE_FLOAT = "float";
 	public const RULE_BOOL = "bool";
 	public const RULE_MATCH = 'match';
@@ -38,6 +36,12 @@ abstract class Model
 	abstract public function rules();
 	/* Load the data for persistence */
 
+	// returns attribute type ex: string, password, email etc
+	public function type($attribute) {
+		$rules = $this->rules();
+		return $rules[$attribute][self::RULE_TYPE];
+	}
+
 	public function error($attribute, $rule, $params = [])
 	{
 		$message = $this->messages[$rule] ?? "";
@@ -54,15 +58,14 @@ abstract class Model
 		$this->messages = array_merge($this->messages, $msg);
 	}
 
-	public function hasError($key)
+	public function hasError($attribute)
 	{
-		return $this->errors[$key] ?? false;
+		return isset($this->errors[$attribute]);
 	}
 
-	public function firstError($key)
+	public function firstError($attribute)
 	{
-		// Helper::pre($this->errors);
-		return $this->errors[$key][0] ?? false;
+		return $this->errors[$attribute][0] ?? false;
 	}
 
 	public function load($data)
@@ -112,8 +115,8 @@ abstract class Model
 				$this->validatePassword($attribute, $value);
 			}
 
-			if ($rule[self::RULE_TYPE] === self::RULE_MATCH && !empty($value)) {
-				$this->validatePassword($attribute, $value);
+			if ($rule[self::RULE_TYPE] === self::RULE_MATCH && $value !== $this->{$rule["match"]}) {
+				$this->error($attribute, self::RULE_MATCH, $rule);
 			}
 
 			if (array_key_exists(self::RULE_MIN, $rule) && strlen($value) < $rule[self::RULE_MIN]) {
@@ -124,7 +127,7 @@ abstract class Model
 				$this->error($attribute, self::RULE_MAX, $rule);
 			}
 		}
-		Helper::pre($this->errors);
+		// Helper::pre($this->errors);
 	}
 
 	private function validateString($attribute, $value)

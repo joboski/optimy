@@ -10,13 +10,10 @@ class Field
 {
 	public $model;
 	public $attribute;
-	public $errors = [];
 
 	public function __construct(Model $model, $attribute){
 		$this->model = $model;
 		$this->attribute = $attribute;
-		$this->errors = $this->model->errors;
-		// Helper::pre($this->errors);
 	}
 
 	public function __toString()
@@ -24,13 +21,16 @@ class Field
 		return sprintf(
 			'<div class="form-group">
 	            <label>%s</label>
-	            <input type="text" name="%s" class="form-control %s">
-	            <div class="invalid-feedback">%s</div>
+	            <input type="%s" name="%s" value="%s" class="form-control %s">
+	            <div class="invalid-feedback">
+	            	%s
+	            </div>
 	        </div>', 
-	        $this->attribute, 
+	        ucfirst($this->attribute), 
+	        $this->model->type($this->attribute),
 	        $this->attribute,
 	        $this->model->{$this->attribute},
-	        $this->model->hasError($this->attribute) ? "in-valid" : "",
+	        $this->model->hasError($this->attribute)? 'is-invalid' : '',
 	        $this->model->firstError($this->attribute)
 		);
 	}

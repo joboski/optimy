@@ -5,22 +5,23 @@ namespace optimy\app\core;
 use optimy\app\core\Router;
 use optimy\app\core\Request;
 use optimy\app\core\Response;
-use optimy\app\core\Helper;
+use optimy\app\connections\MyConnection;
 
 
 class Application
 {
-	private $controller;
+	public $controller;
 	public $router;
 	public $request;
 	public $response;
+	public $db;
 	public static $ROOT_PATH;
 	public static $app;
 
 	private function __construct()
 	{
-		Helper::pre("constructing Application");
 		
+		$this->db = MyConnection::getConnection(); // MySQL 
 		$this->response = new Response();
 		$this->request = new Request();
 		$this->router = new Router($this->request, $this->response);

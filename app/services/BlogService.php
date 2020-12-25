@@ -2,22 +2,22 @@
 
 namespace optimy\app\services;
 
-use optimy\app\models\User;
+use optimy\app\models\Blog;
 
-class UserService 
-{
+class BlogService {
+
 	private $model;
 
 	public function __construct()
 	{
-		$this->model = new User();
-	}	
+		$this->model = new Blog();
+	}
 
-	public function register($data)
+	public function load($data)
 	{
 		$this->model->load($data);
 
-		if ($this->model->validate() && $this->loaded()) {
+		if ($this->model->validate() && $this->execute()) {
 			return true;
 		}
 
@@ -30,10 +30,8 @@ class UserService
 		return $this->model;
 	}
 
-	private function loaded()
+	private function execute()
 	{
-		Helper::pre("loading registration!");
 
-		return true;
 	}
 }

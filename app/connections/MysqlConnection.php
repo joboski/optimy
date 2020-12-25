@@ -2,7 +2,8 @@
 
 namespace optimy\app\connections;
 
-use \optimy\app\config\Config as Config;
+use optimy\app\core\Config;
+use optimy\app\core\Helper;
 use PDO;
 
 class MysqlConnection
@@ -31,7 +32,7 @@ class MysqlConnection
 				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         	];
 
-			$this->_pdo = new PDO($dns, $user, $pass);
+			$this->_pdo = new PDO($dns, $user, $pass, $opt);
 
 		} catch(PDOException $err) {
 			die(json_encode([
@@ -46,10 +47,60 @@ class MysqlConnection
 		if (!isset(self::$_instance)){
 			self::$_instance = new MysqlConnection();
 		}
+		return self::$_instance;
 	}
 
 	public function close()
 	{
 		return $this->_pdo = null;
 	}
+
+	public function applyMigrations()
+	{
+		$dir = __DIR__."\..\migrations";
+		$this->createMigrationsTable();
+		
+		$migratedTables = $this->getMigratedTables();
+		
+		$files = scandir($dir);
+		
+		$pendingMigrations = array_diff($files, $migratedTables);
+		
+		foreach ($pendingMigrations as $migration) {
+			if ($migration === "." || $migration === "..") {
+				// do nothing
+				continue;
+			}
+
+			require_once($dir . "\\" . $migration);
+
+			$className = pathinfo($migration, PATHINFO_FILENAME);
+			// Helper::pre($className);
+			$object = new $className;
+
+			$object->up();
+		}
+	}
+
+	private function createMigrationsTable()
+	{
+		$this->_pdo->exec(
+			"CREATE TABLE IF NOT EXISTS 
+				migrations (
+					id INT AUTO_INCREMENT PRIMARY KEY, 
+					tablename VARCHAR(255), 
+					created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+				)
+				ENGINE=INNODB;"
+			);
+	}
+
+	private function getMigratedTables()
+	{
+		$stmt = $this->_pdo->prepare("SELECT tablename FROM migrations");
+		$stmt->execute();
+
+		return $stmt->fetchAll(PDO::FETCH_COLUMN);
+	}
+
 }

@@ -2,29 +2,24 @@
 
 namespace optimy\app\connections;
 
+use optimy\app\connections\MysqlConnection;
+use optimy\app\core\Helper;
 use optimy\app\core\Config;
 
 class MyConnection 
 {
-	private $_conn;
-	private $_provider;
-
-	public function __constructor()
-	{	
-		$this->_provider = Config::get("provider");
-	}
-
-	public function getConnection()
+	public static function getConnection()
 	{
-		if ($this->_provider === "mysql") {
-				$this->_conn = MysqlConnection::instance();
-		} elseif ($this->_provider === "mssql") {
+		$provider = Config::get("provider");
+		
+		if ($provider === "mysql") {
+			$conn = MysqlConnection::instance();
+		} elseif ($provider === "mssql") {
 			// TODO: if need to change to mssql provider
 		} else {
 			// TODO: throw an error if provider is not existing
 		}
 		
-		return $this->_conn;
+		return $conn;
 	}
-
 }
