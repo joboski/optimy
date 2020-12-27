@@ -5,6 +5,7 @@ namespace optimy\app\core;
 use optimy\app\core\Router;
 use optimy\app\core\Request;
 use optimy\app\core\Response;
+use optimy\app\core\Session;
 use optimy\app\connections\MyConnection;
 
 
@@ -14,6 +15,7 @@ class Application
 	public $router;
 	public $request;
 	public $response;
+	public $session;
 	public $db;
 	public static $ROOT_PATH;
 	public static $app;
@@ -25,6 +27,7 @@ class Application
 		$this->response = new Response();
 		$this->request = new Request();
 		$this->router = new Router($this->request, $this->response);
+		$this->session = new Session();
 	}
 
 	public function run()

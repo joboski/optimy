@@ -2,53 +2,90 @@
 
 namespace optimy\app\repositories;
 
+use optimy\app\contracts\BaseContract;
+use optimy\app\core\Helper;
+use PDO;
 
-class Repository
+
+abstract class Repository
 {
-	protected $_error;
-	protected $_query;
-	protected $_pdo;
-	protected $_results;
-	protected $_count;
+	protected $error;
+	protected $query;
+	protected $pdo;
+	protected $results;
+	protected $count;
+	protected $model;
 
+	private function prepare($sql)
+	{
+		return $this->pdo->prepare($sql);
+	}
 
-	protected function action($action,$table,$where = array()){
-		if(count($where) === 3){
-			$operators = array('=','>','<','>=','<=');
-			$field = $where[0];
-			$operator = $where[1];
-			$value = $where[2];
+	protected function get(string $table, string $whereClause)
+	{
+		// $this->action("SELECT * ", $table, $whereClause);
+	}
 
-			if(in_array($operator,$operators)){
-				$sql = "{$action} FROM {$table} WHERE {$field} {$operator} ?";
-				if(!$this->query($sql,array($value))->error()){
-					return $this;
-				}
-			}
+	protected function find(string $table, array $whereClause)
+	{
+		$attributes = array_keys($whereClause);
+
+		// SELECT * FROM $table WHERE email = :email AND firstname = :firstname....
+		$where = implode("AND ",array_map(function($a){
+			return "$a = :$a";
+		}, $attributes));
+
+		$stmt = self::prepare("SELECT * FROM $table WHERE $where");
+
+		foreach ($whereClause as $key => $value) {
+			// Helper::pre($value));
+			$stmt->bindValue(":$key", $value);
 		}
+
+		$record = $stmt->execute();
+		// Helper::dump($stmt->execute());
+		if ($record) {
+			$this->results = $stmt->fetchAll(PDO::FETCH_OBJ);
+			return $this->results;	
+		}
+		// Helper::dump($this->results);
 		return false;
 	}
 
-	protected function query($sql,$params = array()){
+	protected function insert($table, $attributes, $values)
+	{
+		$params = array_map(function($a){
+			return $a = ":$a";
+		}, $attributes);
 
-		$this->_error = false;
-		if($this->_query = $this->_pdo->prepare($sql)){
-			if(count($params)){
-				$x=1;
-				foreach ($params as $param) {
-					$this->_query->bindValue($x,$param);
-					$x++;
-				}
-			}
-		}
+		$stmt = self::prepare("INSERT INTO  $table (" . implode(',', $attributes) . ") 
+			VALUES(". implode(',', $params) .")");
 
-		if($this->_query->execute()){
-			$this->_results = $this->_query->fetchAll(PDO::FETCH_OBJ); //PDO::FETCH_OBJ
-			$this->_count = $this->_query->rowCount();
-		}else{
-			$this->_error = true;
-		}
+		array_map(function($a, $v) use ($stmt) {
+			$stmt->bindValue(":$a", $v);
+		}, $attributes, $values);
+		
+		$stmt->execute();
 
-		return $this;
+		return true;	
+	}
+
+	protected function update(string $table, array $whereClause)
+	{
+		$this->action("UPDATE ", $table, $whereClause);
+	}
+
+	protected function delete(string $table, string $whereClause)
+	{
+		$this->action("DELETE ", $table, $whereClause);
+	}
+
+	protected function findOne(string $table, array $whereClause)
+	{
+		$results = $this->find($table, $whereClause);
+
+		$this->results = $results[0] ?? false;
+
+		return $this->results;
 	}
 }

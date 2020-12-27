@@ -1,16 +1,6 @@
-.footer 
-{
-	position: fixed;
-    width: 100%;
-    bottom: 0;
-    margin-top: -150px;
-}
-
 .content {
-	margin-top: 100px;
-	margin-bottom: 150px;
+  min-height: calc(100vh - 176px);
 }
-
-textarea.form-control {
-    height: 100px;
+.footer {
+  height: 50px;
 }

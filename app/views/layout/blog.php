@@ -13,7 +13,7 @@
     <!-- Bootstrap core JavaScript -->
     
 
-    <title>News</title>
+    <title>Optimy</title>
   </head>
   <body>
 
@@ -33,8 +33,32 @@
     </div>
   </nav>
 
+  <?php if (optimy\app\core\Application::$app->session->getFlash("success")): ?>
+    <div class="alert alert-success alert-dismissible fade show">
+      <?php echo optimy\app\core\Application::$app->session->getFlash("success") ?>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <?php elseif (optimy\app\core\Application::$app->session->getFlash("fail")): ?>
+     <div class="alert alert-warning">
+      <?php echo optimy\app\core\Application::$app->session->getFlash("fail") ?>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+  <?php endif; ?>
+
   <div class="container">
-    {{content}}
+
+    <div class="content">
+      
+
+      {{content}}
+
+
+    </div>
+    
   </div>
   <footer class="footer py-5 bg-dark mt-4">
     <div class="container">
@@ -44,7 +68,7 @@
 
   <script src="../assets/js/jquery-3.5.0.js"></script>
   <script src="../assets/js/bootstrap.js"></script>
-  <script type="text/javascript" src="../js/script.js"></script>
+  <script type="text/javascript" src="../assets/js/script.js"></script>
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
  -->

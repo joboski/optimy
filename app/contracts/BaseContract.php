@@ -10,9 +10,9 @@ interface BaseContract {
 
 	public function get(string $table, string $whereClause);
 
-	public function add(string $table, array $fields);
+	public function insert(string $table, array $fields);
 
-	public function update(string $table, array $whereClause, array $fields);
+	public function update(string $table, array $whereClause);
 
 	public function delete(string $table, string $whereClause);
 

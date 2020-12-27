@@ -8,13 +8,14 @@ use PDO;
 
 class MysqlConnection
 {
-	private static $_instance = null;
+	private static $instance = null;
 	// Essential var for query result
-	private $_pdo,
-			$_query,
-			$_error = false,
-			$_results,
-			$_count = 0;
+	public $pdo;
+
+	private	$query,
+			$error = false,
+			$results,
+			$count = 0;
 
 	private function __construct()
 	{
@@ -32,7 +33,7 @@ class MysqlConnection
 				PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
         	];
 
-			$this->_pdo = new PDO($dns, $user, $pass, $opt);
+			$this->pdo = new PDO($dns, $user, $pass, $opt);
 
 		} catch(PDOException $err) {
 			die(json_encode([
@@ -44,27 +45,34 @@ class MysqlConnection
 
 	public static function instance()
 	{
-		if (!isset(self::$_instance)){
-			self::$_instance = new MysqlConnection();
+		if (!isset(self::$instance)){
+			self::$instance = new MysqlConnection();
 		}
-		return self::$_instance;
+		return self::$instance;
 	}
 
 	public function close()
 	{
-		return $this->_pdo = null;
+		return $this->pdo = null;
 	}
 
-	public function applyMigrations()
+	public function migrate()
 	{
+		$newMigrations = [];
+
 		$dir = __DIR__."\..\migrations";
 		$this->createMigrationsTable();
 		
-		$migratedTables = $this->getMigratedTables();
-		
+		$migrations = $this->getMigrations();
+
+		$migrations = array_map(function($v) {
+			return $v = $v.".php";
+		}, $migrations);
+		// Helper::pre($migrations);
 		$files = scandir($dir);
+		// Helper::pre($files);
 		
-		$pendingMigrations = array_diff($files, $migratedTables);
+		$pendingMigrations = array_diff($files, $migrations);
 		
 		foreach ($pendingMigrations as $migration) {
 			if ($migration === "." || $migration === "..") {
@@ -77,30 +85,58 @@ class MysqlConnection
 			$className = pathinfo($migration, PATHINFO_FILENAME);
 			// Helper::pre($className);
 			$object = new $className;
-
+			
+			$this->log("Applying migration $migration");
 			$object->up();
+			$this->log("Done migrating $migration");
+			
+			$newMigrations[] = $migration;
+		}
+
+		if (!empty($newMigrations)) {
+			$this->save($newMigrations);
+		} else {
+			$this->log("All migrations are applied");
 		}
 	}
 
 	private function createMigrationsTable()
 	{
-		$this->_pdo->exec(
+		$this->pdo->exec(
 			"CREATE TABLE IF NOT EXISTS 
 				migrations (
 					id INT AUTO_INCREMENT PRIMARY KEY, 
-					tablename VARCHAR(255), 
+					migration VARCHAR(255), 
 					created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 				)
 				ENGINE=INNODB;"
 			);
 	}
 
-	private function getMigratedTables()
+	private function getMigrations()
 	{
-		$stmt = $this->_pdo->prepare("SELECT tablename FROM migrations");
+		$stmt = $this->pdo->prepare("SELECT migration FROM migrations");
 		$stmt->execute();
 
 		return $stmt->fetchAll(PDO::FETCH_COLUMN);
+	}
+
+	private function save($migrations)
+	{
+		$values = implode(",", array_map(
+			function($m){
+				$m = str_replace(".php", "", $m);
+				return "('$m')";
+			}, $migrations));
+		
+		$stmt = $this->pdo->prepare("INSERT INTO migrations (migration) VALUES $values");
+
+		$stmt->execute();
+	}
+
+	private function log($message)
+	{
+		echo '[' . date('Y-m-d H:i:s') . '] - ' . $message . PHP_EOL;
 	}
 
 }

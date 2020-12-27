@@ -19,6 +19,10 @@ class Form
 		return new Field($model, $attribute);
 	}
 
+	public function select(Model $model, $attribute, $options = []){
+		return new Select($model, $attribute, $options);
+	}
+
 	public static function instance()
 	{
 		return new Form();

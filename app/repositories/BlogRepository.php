@@ -3,41 +3,38 @@
 namespace optimy\app\repositories;
 
 use Repository;
-use optimy\app\models\Blog;
-use optimy\app\contracts\BaseContract;
-use optimy\app\connections\MyConnection as Connection;
 
-class BlogRepository extends Repository implements BaseContract
+use optimy\app\connections\MyConnection;
+use optimy\app\models\Blog;
+use optimy\app\repositories\Repository;
+
+class BlogRepository extends Repository 
 {
-	private $_model;
-	private $_conn;
+	private const TABLE_BLOGS = "blogs";
+
+	protected $table;
+	protected $attributes = [];
 
 	public function __construct()
 	{
-		$this->_model = new Blog();
-		$this->_conn = new Connection();
-		$this->_pdo = $this->_conn->getConnection();
+		$this->model = new Blog();
+		$this->pdo = MyConnection::getConnection()->pdo;
+		$this->table = self::TABLE_BLOGS;
+		$this->attributes = $this->attributes();
 	}
 
-	public function get(string $table, string $whereClause)
+	public function save() {
+		return $this->add($this->table, $this->attributes);
+	}
+
+	public function attributes()
 	{
-		$this->action->("SELECT * ", $table, $whereClause);
+		return [
+			"user_id",
+			"title",
+			"content",
+			"category",
+			"filename"
+		];
 	}
-
-	public function add(string $table, array $fields)
-	{
-
-	}
-
-	public function update(string $table, array $whereClause, array $fields)
-	{
-
-	}
-
-	public function delete(string $table, string $whereClause)
-	{
-
-	}
-
-
 }

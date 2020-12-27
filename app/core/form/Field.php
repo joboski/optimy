@@ -3,17 +3,23 @@
 namespace optimy\app\core\form;
 
 use optimy\app\models\Model;
-use optimy\app\core\Helper;
 
 
 class Field
 {
-	public $model;
-	public $attribute;
+	protected $model;
+	protected $attribute;
+	protected $type;
+
+	protected const TYPE_TEXT = "text";
+	protected const TYPE_PASSWORD = "password";
+	protected const TYPE_TEXTAREA = "textarea";
+	protected const TYPE_NUMBER = "number";
 
 	public function __construct(Model $model, $attribute){
 		$this->model = $model;
 		$this->attribute = $attribute;
+		$this->type = self::TYPE_TEXT;
 	}
 
 	public function __toString()
@@ -26,12 +32,27 @@ class Field
 	            	%s
 	            </div>
 	        </div>', 
-	        ucfirst($this->attribute), 
-	        $this->model->type($this->attribute),
+	        $this->model->labels()[$this->attribute] ?? $this->attribute, 
+	        $this->type,
 	        $this->attribute,
 	        $this->model->{$this->attribute},
 	        $this->model->hasError($this->attribute)? 'is-invalid' : '',
 	        $this->model->firstError($this->attribute)
 		);
+	}
+
+	public function passwordField() {
+		$this->type = self::TYPE_PASSWORD;
+		return $this;
+	}
+
+	public function numberField() {
+		$this->type = self::TYPE_NUMBER;
+		return $this;
+	}
+
+	public function textareaField() {
+		$this->type = self::TYPE_TEXTAREA;
+		return $this;
 	}
 }

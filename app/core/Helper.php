@@ -14,10 +14,10 @@ class Helper
 		echo "</pre>";
 	}
 
-	public static function dump($data)
+	public static function dump($data1, $data2 = null, $data3 = null)
 	{
 		echo "<pre>";
-		var_dump($data);
+		var_dump($data1, $data2, $data3);
 		echo "</pre>";
 		exit;
 	}
