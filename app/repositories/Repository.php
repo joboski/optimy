@@ -6,7 +6,6 @@ use optimy\app\contracts\BaseContract;
 use optimy\app\core\Helper;
 use PDO;
 
-
 abstract class Repository
 {
 	protected $error;
@@ -39,9 +38,35 @@ abstract class Repository
 		return $stmt;
 	}
 
-	protected function get(string $table, string $whereClause)
+	protected function get(string $table, string $category)
 	{
-		// $this->action("SELECT * ", $table, $whereClause);
+		try
+		{
+			$stmt = self::prepare("SELECT * FROM $table WHERE category = :category");
+			$stmt->bindValue(":category", $category);
+			$stmt->execute();
+			return $stmt->fetchAll(PDO::FETCH_OBJ);
+		}
+		catch (PDOException $e)
+		{
+			echo 'Connection failed: ' . $e->getMessage();
+    		exit;
+		}
+	}
+
+	protected function fetchAll(string $table)
+	{
+		try
+		{
+			$stmt = self::prepare("SELECT * FROM $table");
+			$stmt->execute();
+			return $stmt->fetchAll(PDO::FETCH_OBJ);
+		}
+		catch (PDOException $e)
+		{
+			echo 'Connection failed: ' . $e->getMessage();
+    		exit;
+		}
 	}
 
 	protected function find(string $table, array $whereClause)
@@ -67,13 +92,13 @@ abstract class Repository
 
 	protected function findOne(string $table, array $whereClause)
 	{
-		Helper::pre("Inside find one");
+		// Helper::pre("Inside find one");
 		try
 		{
 			$stmt = $this->prepareStatement($table, $whereClause);
 			$stmt->execute();
 			$this->results = $stmt->fetchObject(get_class($this->model));
-			Helper::pre($this->results);
+
 			return $this->results;
 		}
 		catch (PDOException $e)
@@ -112,12 +137,12 @@ abstract class Repository
 
 	protected function update(string $table, array $whereClause)
 	{
-		$this->action("UPDATE ", $table, $whereClause);
+		// TODO
 	}
 
 	protected function delete(string $table, string $whereClause)
 	{
-		$this->action("DELETE ", $table, $whereClause);
+		// TODO
 	}
 
 	public function findById($table, $id)
@@ -127,7 +152,7 @@ abstract class Repository
 			$stmt = self::prepare("SELECT * FROM $table WHERE id = $id");
 			$stmt->execute();
 			$this->results = $stmt->fetchObject(get_class($this->model));
-			Helper::pre($this->results);
+			
 			return $this->results;
 		}
 		catch (PDOException $e)

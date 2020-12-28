@@ -21,7 +21,7 @@ class UserService
 
 	public function save()
 	{	
-		Helper::pre("Inside service save");
+		// Helper::pre("Inside service save");
 		$this->model->password = password_hash($this->model->password, PASSWORD_DEFAULT);
 		$this->model->status = $this->model->defaultStatus();
 		// Helper::dump($model->status);
@@ -37,7 +37,6 @@ class UserService
 
 	public function login($loginModel)
 	{
-		Helper::pre("Inside service login");
 		$user = $this->repo->findUser($loginModel->email);
 
 		if (!$user) {

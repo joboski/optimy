@@ -35,9 +35,9 @@ class Application
 
 		$value = $this->session->get('user');
 
-		Helper::pre("Application");
+		// Helper::pre("Application");
 		if ($value) {
-			Helper::pre("Inside value");
+			// Helper::pre("Inside value");
 			$this->user = new $class;
 			$key = $this->user->primaryKey();
 
@@ -82,9 +82,9 @@ class Application
 
 	public function login($user)
 	{
-		Helper::pre("Inside Application Login");
+		// Helper::pre("Inside Application Login");
 		$this->user = $user;
-		Helper::pre($this->user);
+		// Helper::pre($this->user);
 		$primaryKey = $this->user->primaryKey();
 		$value = $user->{$primaryKey};
 

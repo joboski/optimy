@@ -31,4 +31,14 @@ class BlogService
 
 		return $this->repo->save($table, $attributes, $values);
 	}
+
+	public function getAllBlogs($tablename)
+	{
+		return $this->repo->getAll($tablename);
+	}
+
+	public function getBlog($tablename, $type)
+	{
+		return $this->repo->getBlogByType($tablename, $type);
+	}
 }

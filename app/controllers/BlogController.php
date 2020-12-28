@@ -36,25 +36,24 @@ class BlogController extends Controller
 			if ($_FILES) {
 				$uploadDir = Application::$ROOT_PATH . "/app/assets/uploads/";
 				$uploadFile = $uploadDir . $_FILES["filename"]["name"];
-
-				Helper::pre($uploadFile);
+				// Helper::pre($uploadFile);
+				// Checking the MIME type
+			    $extension = in_array($_FILES["filename"]["type"], [
+			    	"image/jpeg",
+			    	"image/png",
+			    	"image/gif",
+			    	"image/tiff"
+			    ]);
 
 				try {
+
 					if ($_FILES["filename"]["error"] != 0 && isset($_FILES["filename"]["error"])) {
 						throw new RuntimeException("Invalid parameters");
 					}
-
-					// You should also check filesize here.
+					// Checking filesize here.
 				    if ($_FILES["filename"]["size"] > 100000) {
 				        throw new RuntimeException('Exceeded filesize limit.');
 				    }
-				    // check the MIME type
-				    $extension = in_array($_FILES["filename"]["type"], [
-				    	"image/jpeg",
-				    	"image/png",
-				    	"image/gif",
-				    	"image/tiff"
-				    ]);
 
 				    if (!$extension) {
 				    	throw new RuntimeException('Invalid file format.');
@@ -65,13 +64,13 @@ class BlogController extends Controller
 				}
 			}
 
-			Helper::pre(Application::$app->user->id);
+			// Helper::pre(Application::$app->user->id);
 			$this->model->load($request->body());
 			$this->model->userid = Application::$app->user->id;
 			$this->model->filename = $_FILES["filename"]["name"];
 			
-			Helper::pre($request->body());
-			Helper::pre($this->model->validate());
+			// Helper::pre($request->body());
+			// Helper::pre($this->model->validate());
 
 			if ($this->model->validate() && $this->service->create()) {
 
@@ -81,22 +80,11 @@ class BlogController extends Controller
 				exit;
 			}
 			Application::$app->session->setFlash("fail" , "Failed to create blog.");
+			// Display the blog form
 			return $this->view("blog", ["model" => $this->model]);
-		}	
-		return $this->view("blog", ["model" => $this->model]);
-	}
-
-	public function get(Request $request, Response $response)
-	{
-		if ($request->isPost()) {
-			if ($this->service->load($request->body())) {
-				return "success";
-			}
-			return $this->view("blog", ["model" => $this->service->model()]);
 		}
-		
-		$this->setLayout('blog');
 
-		return $this->view("blog", ["model" => $this->service->model()]);
+		// Display the blog form 
+		return $this->view("blog", ["model" => $this->model]);
 	}
 }

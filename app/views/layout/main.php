@@ -3,8 +3,6 @@
 use optimy\app\core\Application;
 use optimy\app\core\Helper;
 
-Helper::pre(Application::$app->user);
-
 ?>
 
 <!doctype html>
