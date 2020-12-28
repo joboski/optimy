@@ -87,41 +87,7 @@ $GLOBALS['config'] = array(
 
 : Folder structure
 ---
-   |.env
-   |__app
-        |__index.php
-        |__init.php
-        |__.htaccess
-        |
-        |__controllers
-        |      |__articleController.php
-        |      |__userController.php
-        |      
-        |__interfaces
-        |       |__Database.php
-        |
-        |__models
-        |       |__Blog.php
-        |       |__User.php
-        |
-        |__repositories
-        |       |__BlogRepositories.php
-        |       |__UserRepositories.php
-        |
-        |__services
-        |       |__Config.php
-        |       |__Mysqldb.php
-        |       |__Url.php
-        |       |__Route.php
-        |       |__Validation.php
-        |       |__Session.php
-        |       |__Token.php
-        |
-        |__www
-            |__css
-            |__js
-            |__uploads
-            |__views
+scaleable folder structure where we should separate class according to concerns.
 ---
 
 - Use PHP Data Object (PDO) to abstract the connection to database
@@ -134,4 +100,8 @@ $GLOBALS['config'] = array(
 
 
 Create a model to emulate what fields are on the table.
+Create repositories that communicate to the database itself.
+Create service layer for the business logic.
+Create migrations table and do the table migration incrementally.
+
 
