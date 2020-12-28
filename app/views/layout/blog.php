@@ -1,3 +1,10 @@
+<?php
+
+use optimy\app\core\Application;
+use optimy\app\core\Helper;
+
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -33,16 +40,16 @@
     </div>
   </nav>
 
-  <?php if (optimy\app\core\Application::$app->session->getFlash("success")): ?>
+  <?php if (Application::$app->session->getFlash("success")): ?>
     <div class="alert alert-success alert-dismissible fade show">
-      <?php echo optimy\app\core\Application::$app->session->getFlash("success") ?>
+      <?php echo Application::$app->session->getFlash("success") ?>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-    <?php elseif (optimy\app\core\Application::$app->session->getFlash("fail")): ?>
+    <?php elseif (Application::$app->session->getFlash("fail")): ?>
      <div class="alert alert-warning">
-      <?php echo optimy\app\core\Application::$app->session->getFlash("fail") ?>
+      <?php echo Application::$app->session->getFlash("fail") ?>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>

@@ -21,13 +21,7 @@ abstract class Repository
 		return $this->pdo->prepare($sql);
 	}
 
-	protected function get(string $table, string $whereClause)
-	{
-		// $this->action("SELECT * ", $table, $whereClause);
-	}
-
-	protected function find(string $table, array $whereClause)
-	{
+	private function prepareStatement(string $table, array $whereClause) {
 		$attributes = array_keys($whereClause);
 
 		// SELECT * FROM $table WHERE email = :email AND firstname = :firstname....
@@ -42,13 +36,52 @@ abstract class Repository
 			$stmt->bindValue(":$key", $value);
 		}
 
-		$record = $stmt->execute();
-		// Helper::dump($stmt->execute());
-		if ($record) {
+		return $stmt;
+	}
+
+	protected function get(string $table, string $whereClause)
+	{
+		// $this->action("SELECT * ", $table, $whereClause);
+	}
+
+	protected function find(string $table, array $whereClause)
+	{
+		try
+		{
+			$stmt = self::prepareStatement($table, $whereClause);
+			$stmt->execute();
 			$this->results = $stmt->fetchAll(PDO::FETCH_OBJ);
+		}
+		catch (PDOException $e)
+		{
+			echo 'Connection failed: ' . $e->getMessage();
+    		exit;
+		}
+
+		if ($this->results) {
 			return $this->results;	
 		}
-		// Helper::dump($this->results);
+
+		return false;
+	}
+
+	protected function findOne(string $table, array $whereClause)
+	{
+		Helper::pre("Inside find one");
+		try
+		{
+			$stmt = $this->prepareStatement($table, $whereClause);
+			$stmt->execute();
+			$this->results = $stmt->fetchObject(get_class($this->model));
+			Helper::pre($this->results);
+			return $this->results;
+		}
+		catch (PDOException $e)
+		{
+			echo 'Connection failed: ' . $e->getMessage();
+    		exit;
+		}
+		
 		return false;
 	}
 
@@ -58,15 +91,22 @@ abstract class Repository
 			return $a = ":$a";
 		}, $attributes);
 
-		$stmt = self::prepare("INSERT INTO  $table (" . implode(',', $attributes) . ") 
+		try 
+		{
+			$stmt = self::prepare("INSERT INTO  $table (" . implode(',', $attributes) . ") 
 			VALUES(". implode(',', $params) .")");
 
-		array_map(function($a, $v) use ($stmt) {
-			$stmt->bindValue(":$a", $v);
-		}, $attributes, $values);
+			array_map(function($a, $v) use ($stmt) {
+				$stmt->bindValue(":$a", $v);
+			}, $attributes, $values);
 		
-		$stmt->execute();
-
+			$stmt->execute();
+		}
+		catch(PDOException $e)
+		{
+			echo 'Connection failed: ' . $e->getMessage();
+    		exit;
+		}
 		return true;	
 	}
 
@@ -80,12 +120,23 @@ abstract class Repository
 		$this->action("DELETE ", $table, $whereClause);
 	}
 
-	protected function findOne(string $table, array $whereClause)
+	public function findById($table, $id)
 	{
-		$results = $this->find($table, $whereClause);
-
-		$this->results = $results[0] ?? false;
-
-		return $this->results;
+		try
+		{
+			$stmt = self::prepare("SELECT * FROM $table WHERE id = $id");
+			$stmt->execute();
+			$this->results = $stmt->fetchObject(get_class($this->model));
+			Helper::pre($this->results);
+			return $this->results;
+		}
+		catch (PDOException $e)
+		{
+			echo 'Connection failed: ' . $e->getMessage();
+    		exit;
+		}
+		
+		return false;
 	}
+
 }

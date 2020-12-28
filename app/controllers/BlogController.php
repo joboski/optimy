@@ -30,4 +30,18 @@ class BlogController extends Controller
 
 		return $this->view("blog", ["model" => $this->service->model()]);
 	}
+
+	public function get(Request $request, Response $response)
+	{
+		if ($request->isPost()) {
+			if ($this->service->load($request->body())) {
+				return "success";
+			}
+			return $this->view("blog", ["model" => $this->service->model()]);
+		}
+		
+		$this->setLayout('blog');
+
+		return $this->view("blog", ["model" => $this->service->model()]);
+	}
 }

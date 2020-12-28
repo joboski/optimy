@@ -1,3 +1,12 @@
+<?php
+
+use optimy\app\core\Application;
+use optimy\app\core\Helper;
+
+Helper::pre(Application::$app->user);
+
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -24,35 +33,56 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/blog/foods">Foods</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/blog/places">Places</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/blog/sports">Sports</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/blog/people">People</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-           <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
-           </li>
-           <li class="nav-item">
-            <a class="nav-link" href="/register">Register</a>
-          </li>
-        </ul>
+        
+        <?php if (Application::isGuest()) : ?>
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="/foods">Foods</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/places">Places</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/sports">Sports</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/people">People</a>
+              </li>
+            </ul>
+            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+               <li class="nav-item">
+                <a class="nav-link" href="/login">Login</a>
+               </li>
+               <li class="nav-item">
+                <a class="nav-link" href="/register">Register</a>
+              </li>
+            </ul>
+
+        <?php else: ?>
+
+           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Welcome <?php Application::$app->user->displayName() ?></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/create">Create Blog</a>
+              </li>
+            </ul>
+            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+               <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+               </li>
+            </ul>
+        <?php endif; ?>
+
       </div>
     </div>
   </nav>
  
-    <?php if (optimy\app\core\Application::$app->session->getFlash("success")): ?>
+    <?php if (Application::$app->session->getFlash("success")): ?>
     <div class="alert alert-success alert-dismissible fade show">
-      <?php echo optimy\app\core\Application::$app->session->getFlash("success") ?>
+      <?php echo Application::$app->session->getFlash("success") ?>
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>

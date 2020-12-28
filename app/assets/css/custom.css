@@ -4,3 +4,11 @@
 .footer {
   height: 50px;
 }
+
+.bottom_space {
+	margin-bottom: 40px;
+}
+
+.ceiling_space {
+	margin-top: 30px;
+}

@@ -2,11 +2,16 @@
     
 <?php echo $form->begin("", "post") ?>
 
-<?php echo $form->field($model, "userid") ?>
 <?php echo $form->field($model, "title"); ?>
-<?php echo $form->field($model, "content"); ?>
-<?php echo $form->field($model, "filename"); ?>
-<?php echo $form->field($model, "category"); ?>
+<?php echo $form->textarea($model, "content"); ?>
+<?php echo $form->select($model, "category", ["foods", "sports", "places", "people"]); ?>
+
+<div class="input-group bottom_space">
+  <div class="custom-file">
+    <input type="file" class="custom-file-input" id="filename">
+    <label class="custom-file-label" for="filename">Choose file</label>
+  </div>
+</div>
 <button type="submit" class="btn btn-primary">Submit</button>
 <a class="btn btn-outline-danger" href="/">Cancel</a>
 

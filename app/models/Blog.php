@@ -6,6 +6,9 @@ use optimy\app\models\Model;
 
 class Blog extends Model
 {
+	private const TABLE_NAME = "blogs";
+	private const PRIMARY_KEY = "id";
+
 	public $userid;
 	public $title;
 	public $content;
@@ -16,10 +19,6 @@ class Blog extends Model
 	public function rules()
 	{
 		return [
-			"userid" => [
-				"type" => "hidden",
-				"required" => true
-			],
 			"title" => [
 				"type" => "string",
 				"required" => true,
@@ -27,23 +26,49 @@ class Blog extends Model
 				"max" => "50"
 			],
 			"content" => [
-				"type" => "text",
+				"type" => "unknown",
 				"required" => true,
 				"min" => 100,
 				"max" => 3000
 			],
 			"filename" => [
 				"type" => "string",
-				"required" => false	
+				"required" => false,
+				"image" => true
 			],
 			"category" => [
 				"type" => "string",
 				"required" => true	
-			],
-			"created_at" => [
-				"type" => "date",
-				"required" => false		
 			]
 		];
 	}
+
+	public function labels()
+	{
+		return [
+			"title" => "Title",
+			"content" => "Description",
+			"filename" => "Upload File",
+			"category" => "Categories",
+			"foods" => "Foods",
+			"sports" => "Sports",
+			"places" => "Places",
+			"people" => "People"
+		];
+	}
+
+	public function tableName()
+	{
+		return self::TABLE_NAME;
+	}
+
+	public function primaryKey()
+	{
+		return self::PRIMARY_KEY;
+	}
+
+	public function attributes()
+	{
+		return ["title", "content", "filename", "category"];
+	}	
 }

@@ -6,9 +6,11 @@ use optimy\app\models\Model;
 
 class Login extends Model
 {
+	private const TABLE_NAME = "users";
+	private const PRIMARY_KEY = "id";
+
 	public $email = "";
 	public $password = "";
-	protected $table = "";
 
 	public function rules() {
 		return [
@@ -38,7 +40,11 @@ class Login extends Model
 
 	public function tableName()
 	{
-		$this->table = "users";
-		return $this->table;
+		return self::TABLE_NAME;
+	}
+
+	public function primaryKey()
+	{
+		return self::PRIMARY_KEY;
 	}
 }

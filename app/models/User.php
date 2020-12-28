@@ -7,6 +7,7 @@ use optimy\app\models\Model;
 class User extends Model
 {	
 	private const TABLE_USERS = "users";
+	private const PRIMARY_KEY = "id";
 	private const STATUS_INACTIVE = 0;
 	private const STATUS_ACTIVE = 1;
 	private const STATUS_DELETED = 2;
@@ -38,6 +39,11 @@ class User extends Model
 		return self::TABLE_USERS;
 	}
 
+	public function primaryKey()
+	{
+		return self::PRIMARY_KEY;
+	}
+
 	public function attributes()
 	{
 		return ["firstname", "lastname", "email", "password", "status"];
@@ -52,6 +58,11 @@ class User extends Model
 			"password" => "Password",
 			"confirmPassword" => "Repeat Password",
 		];
+	}
+
+	public function displayName()
+	{
+		return $this->firstname . " " . $this->lastname;
 	}
 	
 	public function rules() {

@@ -13,7 +13,6 @@ class Field
 
 	protected const TYPE_TEXT = "text";
 	protected const TYPE_PASSWORD = "password";
-	protected const TYPE_TEXTAREA = "textarea";
 	protected const TYPE_NUMBER = "number";
 
 	public function __construct(Model $model, $attribute){
@@ -25,7 +24,7 @@ class Field
 	public function __toString()
 	{
 		return sprintf(
-			'<div class="form-group">
+			'<div class="form-group bottom_space ceiling_space">
 	            <label>%s</label>
 	            <input type="%s" name="%s" value="%s" class="form-control %s">
 	            <div class="invalid-feedback">
@@ -41,18 +40,15 @@ class Field
 		);
 	}
 
-	public function passwordField() {
+	public function passwordField()
+	{
 		$this->type = self::TYPE_PASSWORD;
 		return $this;
 	}
 
-	public function numberField() {
+	public function numberField()
+	{
 		$this->type = self::TYPE_NUMBER;
-		return $this;
-	}
-
-	public function textareaField() {
-		$this->type = self::TYPE_TEXTAREA;
 		return $this;
 	}
 }

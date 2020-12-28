@@ -18,6 +18,7 @@ abstract class Model
 	public const RULE_MAX = 'max';
 	public const RULE_PASSWORD = 'password';
 	public const RULE_UNIQUE = 'unique';
+	public const RULE_IMAGE = 'image';
 	public const RULE_INVALID = 'invalid';
 	
 	public $errors = [];
@@ -34,7 +35,8 @@ abstract class Model
 		self::RULE_MATCH => 'This field must be the same as {match}',
 		self::RULE_PASSWORD => 'Password must be alphanumeric with atleast 1 uppercase and atleast 1 lowercase',
 		self::RULE_UNIQUE => '{unique} already exists.',
-		self::RULE_INVALID => 'Invalid input'
+		self::RULE_INVALID => 'Invalid input',
+		self::RULE_IMAGE => 'Only image file are allowed'
 	];
 
 	abstract public function rules();
@@ -44,6 +46,10 @@ abstract class Model
 	abstract public function attributes();
 
 	abstract public function labels();
+
+	abstract public function primaryKey();
+
+	// abstract public function primaryKey();
 
 	// returns attribute type ex: string, password, email etc
 	public function type($attribute) {
@@ -103,6 +109,10 @@ abstract class Model
 
 			if (array_key_exists(self::RULE_UNIQUE, $rule) && !empty($value)) {
 				$this->validateUnique($attribute, $value, $rule);
+			}
+
+			if (array_key_exists(self::RULE_IMAGE, $rule) && !empty($value)) {
+				$this->validateImage($attribute, $value, $rule);
 			} 
 
 			if ($rule[self::RULE_TYPE] === self::RULE_EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -141,6 +151,8 @@ abstract class Model
 				$this->error($attribute, self::RULE_MAX, $rule);
 			}
 		}
+
+		return empty($this->errors);
 	}
 
 	public function getErrors()
@@ -175,7 +187,8 @@ abstract class Model
     	}
     }
 
-    private function validateUnique($attribute, $value, $rule){
+    private function validateUnique($attribute, $value, $rule)
+    {
     	$pdo = MyConnection::getConnection()->pdo;
 		$class = $rule['class'];
 		$table = $class::tableName();
@@ -189,6 +202,13 @@ abstract class Model
 		$rule['unique'] = $value;
 		if ($record) {
 			$this->error($attribute, self::RULE_UNIQUE, $rule);
+		}
+    }
+
+    private function validateImage($attribute, $value)
+    {
+    	if(!exif_imagetype($value)) {
+    		$this->error($attribute, self::RULE_IMAGE);
 		}
     }
 }
