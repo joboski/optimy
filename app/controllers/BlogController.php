@@ -21,7 +21,7 @@ class BlogController extends Controller
 
 	public function __construct()
 	{
-		Helper::pre("inside BLOG Controller");
+		// Helper::pre("inside BLOG Controller");
 		$this->model = new Blog();
 		$this->service = new BlogService($this->model);
 
@@ -29,7 +29,7 @@ class BlogController extends Controller
 
 	public function create(Request $request, Response $response)
 	{
-		$this->setLayout('blog');
+		$this->setLayout('main');
 		
 		if ($request->isPost()) {
 			// for uploaded file
