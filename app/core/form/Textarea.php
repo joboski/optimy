@@ -24,12 +24,13 @@ class Textarea
               <label class="label">
                 %s
               </label>
-              <textarea class="form-control" name=%s id=%s aria-label="%s" rows="5"></textarea>
+              <textarea class="form-control" name=%s id=%s aria-label="%s" rows="5">%s</textarea>
             </div>',
             $this->model->labels()[$this->attribute] ?? $this->attribute,
             $this->attribute, 
             $this->attribute,
-            $this->model->labels()[$this->attribute] ?? $this->attribute
+            $this->model->labels()[$this->attribute] ?? $this->attribute,
+            $this->model->{$this->attribute}
         );
     }
 }

@@ -29,7 +29,7 @@ class Blog extends Model
 				"type" => "unknown",
 				"required" => true,
 				"min" => 100,
-				"max" => 3000
+				"max" => 5000
 			],
 			"filename" => [
 				"type" => "string",
@@ -69,6 +69,6 @@ class Blog extends Model
 
 	public function attributes()
 	{
-		return ["title", "content", "filename", "category"];
+		return ["userid", "title", "content", "filename", "category"];
 	}	
 }

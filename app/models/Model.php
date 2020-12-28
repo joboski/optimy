@@ -111,10 +111,6 @@ abstract class Model
 				$this->validateUnique($attribute, $value, $rule);
 			}
 
-			if (array_key_exists(self::RULE_IMAGE, $rule) && !empty($value)) {
-				$this->validateImage($attribute, $value, $rule);
-			} 
-
 			if ($rule[self::RULE_TYPE] === self::RULE_EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
 				$this->error($attribute, self::RULE_EMAIL);
 			}
@@ -202,13 +198,6 @@ abstract class Model
 		$rule['unique'] = $value;
 		if ($record) {
 			$this->error($attribute, self::RULE_UNIQUE, $rule);
-		}
-    }
-
-    private function validateImage($attribute, $value)
-    {
-    	if(!exif_imagetype($value)) {
-    		$this->error($attribute, self::RULE_IMAGE);
 		}
     }
 }

@@ -18,20 +18,11 @@ class Filefield
 	public function __toString()
 	{
 		return sprintf(
-			'<div class="input-group bottom_space">
-			  <div class="custom-file">
-			    <input type="file" id="%s" name="%s" class="custom-file-input %s">
-			    <label class="custom-file-label" for="%s">Choose file</label>
-			  </div>
-			  <div class="invalid-feedback">
-	            	%s
-	           </div>
-			</div>', 
+			'<input type="file" id="%s" name="%s" value="%s" class="custom-file-input %s">',   
 	        $this->attribute,
 	        $this->attribute,
-	        $this->attribute,
-	        $this->model->hasError($this->attribute) ? 'invalid-feedback' : '',
-	        $this->model->firstError($this->attribute)
+	        $this->model->{$this->attribute},
+	        $this->model->hasError($this->attribute) ? 'is-invalid' : ''
 		);
 	}
 }

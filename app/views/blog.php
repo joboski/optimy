@@ -8,7 +8,9 @@
 
 <div class="input-group bottom_space">
   <div class="custom-file">
-    <input type="file" class="custom-file-input" id="filename">
+    <!-- <input type="file" class="custom-file-input" id="filename" name="filename" value=<?php echo $model->title; ?>> -->
+    <?php echo $form->file($model, "filename"); ?>
+
     <label class="custom-file-label" for="filename">Choose file</label>
   </div>
 </div>

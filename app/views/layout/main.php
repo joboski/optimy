@@ -63,10 +63,10 @@ Helper::pre(Application::$app->user);
 
            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="#">Welcome <?php Application::$app->user->displayName() ?></a>
+                <a class="nav-link" href="#">Welcome <?php echo Application::$app->user->displayName();  ?></a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/create">Create Blog</a>
+                <a class="nav-link" href="/blog">Create Blog</a>
               </li>
             </ul>
             <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
