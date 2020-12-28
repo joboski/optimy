@@ -26,7 +26,7 @@ use optimy\app\core\Helper;
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Optimy</a>
+      <a class="navbar-brand" href="#"><b>Optimy</b></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -50,27 +50,33 @@ use optimy\app\core\Helper;
             </ul>
             <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
                <li class="nav-item">
-                <a class="nav-link" href="/login">Login</a>
+                <a class="nav-link" href="/login"><b>Hi Guest</b> <small style="color:blue;">(Login)</small></a>
                </li>
-               <li class="nav-item">
-                <a class="nav-link" href="/register">Register</a>
-              </li>
             </ul>
 
         <?php else: ?>
 
-           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link" href="#">Welcome <?php echo Application::$app->user->displayName();  ?></a>
+                <a class='btn btn-primary ?>' href="/blog">Create Blog</a>
+              </li>         
+              <li class="nav-item">
+                <a class="nav-link" href="/foods">Foods</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/blog">Create Blog</a>
+                <a class="nav-link" href="/places">Places</a>
               </li>
-            </ul>
+              <li class="nav-item">
+                <a class="nav-link" href="/sports">Sports</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/people">People</a>
+              </li>
+          </ul>
             <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-               <li class="nav-item">
-                <a class="nav-link" href="/logout">Logout</a>
-               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/logout"><b>Hi <?php echo Application::$app->user->firstname;  ?></b><small style="color:red;"> (Logout) </small></a>
+              </li>
             </ul>
         <?php endif; ?>
 

@@ -62,11 +62,10 @@ class AuthController extends Controller
 		$this->service = new UserService($this->userModel);
 
 		if ($request->isPost()) {
-			// 		
-			Helper::pre("AuthController: Data has been loaded to login model");
+			
 			if ($this->loginModel->validate() && $this->service->login($this->loginModel)) {
 				Application::$app->session->setFlash("login" , "Successfully login");
-				// Application::$app->session->set("user", )
+				
 				$this->response->redirect("/"); // home
 				return;
 			}

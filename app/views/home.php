@@ -2,10 +2,21 @@
 	use optimy\app\core\Application;
 	use optimy\app\core\Helper;
 ?>
+<?php if (empty($blogs)) { ?>
+	<header class="jumbotron mt-4 mx-auto mb-12">
+        <h1 class="display-3">Oops no entry for this type!</h1>
+        <?php if (Application::$app->user) { ?>
+        	<a class="btn btn-primary btn-lg mt-4" href="/blog">Create Article</a>
+        <?php } else {?>  	
+        	<a class="btn btn-primary btn-lg mt-4" href="/login">Please Login to create blogs</a>
+        <?php } ?>
+    </header>
+
+<?php } else { ?>
+
 <div class="spaces">
 	<h3> Check out this amazing blogs </h3>
 </div>
-
 <div class="row">
 <?php $index = 1; $prev = 1; foreach ($blogs as $blog) { ?>
 
@@ -31,6 +42,7 @@
 	        </button>
 	      </div>
 	      <div class="modal-body">
+	      	<img class="img" src='<?php echo "/../assets/uploads/" .  $blog->filename ?>' alt="<?php echo $blog->filename?>" width=465>
 	        <?php echo $blog->content ?>
 	      </div>
 	      <div class="modal-footer">
@@ -39,6 +51,8 @@
 	    </div>
 	  </div>
 	</div>
+<?php } ?>
+
 <?php } ?>
 </div>
 
