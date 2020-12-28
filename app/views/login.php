@@ -1,13 +1,19 @@
-<h2>Sign in</h2>
-<form method="post" enctype="multipart/form-data" action="/login">
-  <div class="form-group">
-        <label>Username / Email</label>
-        <input type="email" name="email" class="form-control is-invalid">
-    </div>
-    <div class="form-group">
-        <label>Password</label>
-        <input type="password" name="password" class="form-control">
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <a class="btn btn-outline-danger" href="#">Cancel</a>
-</form>
+<?php 
+    /*
+    *   @var $model optimy\app\models\User
+    */
+?>
+
+
+<h2>Sign Up</h2>
+
+<?php $form = optimy\app\core\form\Form::instance() ?>
+    
+<?php echo $form->begin("", "post") ?>
+<?php echo $form->field($model, "email"); ?>
+<?php echo $form->field($model, "password")->passwordField(); ?>
+
+<button type="submit" class="btn btn-primary">Submit</button>
+<a class="btn btn-outline-danger" href="/">Cancel</a>
+
+<?php $form->end();?>

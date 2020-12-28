@@ -8,6 +8,8 @@ $GLOBALS["config"] = array(
 	// type of database product in use
 	"provider" => $env["provider"],
 	"base_url" => $env["base_url"],
+	"class" => $env["class"],
+	"repo" => $env["repo"],
 	"mysql" => [
 		"host" => $env["mysql_host"],
 		"user" => $env["mysql_user"],

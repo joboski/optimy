@@ -2,36 +2,43 @@
 
 namespace optimy\app\services;
 
+use optimy\app\repositories\BlogRepository;
+use optimy\app\core\Helper;
 use optimy\app\models\Blog;
 
-class BlogService {
-
+class BlogService
+{
+	private $repo;
 	private $model;
 
-	public function __construct()
+
+	public function __construct(Blog $model)
 	{
-		$this->model = new Blog();
+		$this->model = $model;
+		$this->repo = new BlogRepository();
+		
 	}
 
-	public function load($data)
+	public function create()
 	{
-		$this->model->load($data);
+		$table = $this->model->tableName();
+		$attributes = $this->model->attributes();
+		
+		$model = $this->model;
+		$values = array_map(function($a) use ($model){
+			return $model->{$a};
+		}, $attributes);
 
-		if ($this->model->validate() && $this->execute()) {
-			return true;
-		}
-
-		return false;
+		return $this->repo->save($table, $attributes, $values);
 	}
 
-// Let the service call the model and not the controller
-	public function model()
+	public function getAllBlogs($tablename)
 	{
-		return $this->model;
+		return $this->repo->getAll($tablename);
 	}
 
-	private function execute()
+	public function getBlog($tablename, $type)
 	{
-
+		return $this->repo->getBlogByType($tablename, $type);
 	}
 }

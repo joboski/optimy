@@ -20,8 +20,33 @@
       </button>
     </div>
   </nav>
+ 
+    <?php if (optimy\app\core\Application::$app->session->getFlash("success")): ?>
+    <div class="alert alert-success alert-dismissible fade show">
+      <?php echo optimy\app\core\Application::$app->session->getFlash("success") ?>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <?php elseif (optimy\app\core\Application::$app->session->getFlash("fail")): ?>
+     <div class="alert alert-warning">
+      <?php echo optimy\app\core\Application::$app->session->getFlash("fail") ?>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <?php endif; ?>
+
   <div class="container">
-    {{content}}
+    
+    <div class="content">
+    
+
+       {{content}}
+
+
+    </div>
+
   </div>
   <footer class="footer py-5 bg-dark mt-4">
     <div class="container">
@@ -31,7 +56,7 @@
 
   <script src="../assets/js/jquery-3.5.0.js"></script>
   <script src="../assets/js/bootstrap.js"></script>
-  <script type="text/javascript" src="../js/script.js"></script>
+  <script type="text/javascript" src="../assets/js/script.js"></script>
 
     <!-- Option 2: Separate Popper and Bootstrap JS -->
     <!--

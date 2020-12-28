@@ -9,4 +9,4 @@ use optimy\app\core\Application;
 
 $app = Application::instance();
 
-$app->db->applyMigrations();
+$app->db->migrate();

@@ -1,6 +1,6 @@
-$('#customFile').on('click',function(){
+$('input[type="file"]').change(function(e){
     //get the file name
-    var fileName = $(this).val();
+    var fileName = e.target.files[0].name;
     //replace the "Choose a file" label
-    $(this).next('.custom-file-label').html(fileName);
+    $('.custom-file-label').html(fileName);
 });

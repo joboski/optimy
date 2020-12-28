@@ -2,6 +2,8 @@
 
 namespace optimy\app\models;
 
+use optimy\app\connections\MyConnection;
+
 abstract class Model
 {
 	public const RULE_TYPE = 'type';
@@ -15,6 +17,8 @@ abstract class Model
 	public const RULE_MIN = 'min';
 	public const RULE_MAX = 'max';
 	public const RULE_PASSWORD = 'password';
+	public const RULE_UNIQUE = 'unique';
+	public const RULE_IMAGE = 'image';
 	public const RULE_INVALID = 'invalid';
 	
 	public $errors = [];
@@ -28,13 +32,24 @@ abstract class Model
 		self::RULE_BOOL => 'This field should be true or false only',
 		self::RULE_MIN => 'Minimum length must be {min} characters',
 		self::RULE_MAX => 'Maximum length is {max} characters',
-		self::RULE_MATCH => 'Field must be the same as {match}',
+		self::RULE_MATCH => 'This field must be the same as {match}',
 		self::RULE_PASSWORD => 'Password must be alphanumeric with atleast 1 uppercase and atleast 1 lowercase',
-		self::RULE_INVALID => 'Invalid input'
+		self::RULE_UNIQUE => '{unique} already exists.',
+		self::RULE_INVALID => 'Invalid input',
+		self::RULE_IMAGE => 'Only image file are allowed'
 	];
 
 	abstract public function rules();
-	/* Load the data for persistence */
+	// @returns type sting tablename 
+	abstract public function tableName();
+	// @returns array of attributes 1 is 1 from the actual table 
+	abstract public function attributes();
+
+	abstract public function labels();
+
+	abstract public function primaryKey();
+
+	// abstract public function primaryKey();
 
 	// returns attribute type ex: string, password, email etc
 	public function type($attribute) {
@@ -47,15 +62,16 @@ abstract class Model
 		$message = $this->messages[$rule] ?? "";
 		
 		foreach ($params as $key => $value) {
-			$message = str_replace("{{$key}}", $value, $message);
+
+			$message = str_replace("{{$key}}", $this->labels()[$value] ?? $value, $message);
 		}
 
 		$this->errors[$attribute][] = $message;
 	}
 
-	public function addMessages($msg = [])
+	public function addError($attribute, $message)
 	{
-		$this->messages = array_merge($this->messages, $msg);
+		$this->errors[$attribute][] = $message;
 	}
 
 	public function hasError($attribute)
@@ -68,6 +84,7 @@ abstract class Model
 		return $this->errors[$attribute][0] ?? false;
 	}
 
+	/* Load the data for persistence */
 	public function load($data)
 	{	
 		foreach ($data as $key => $value) {
@@ -85,10 +102,13 @@ abstract class Model
 		foreach ($rulesArray as $attribute => $rule) {
 			
 			$value = $this->{$attribute};
-			// Helper::pre($attribute);
-			// Helper::dump($rules);
+
 			if ($rule[self::RULE_REQUIRED] && empty($value)) {
 				$this->error($attribute, self::RULE_REQUIRED);
+			}
+
+			if (array_key_exists(self::RULE_UNIQUE, $rule) && !empty($value)) {
+				$this->validateUnique($attribute, $value, $rule);
 			}
 
 			if ($rule[self::RULE_TYPE] === self::RULE_EMAIL && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -127,7 +147,13 @@ abstract class Model
 				$this->error($attribute, self::RULE_MAX, $rule);
 			}
 		}
-		// Helper::pre($this->errors);
+
+		return empty($this->errors);
+	}
+
+	public function getErrors()
+	{
+		return $this->errors;
 	}
 
 	private function validateString($attribute, $value)
@@ -155,5 +181,23 @@ abstract class Model
     	if (!preg_match('/^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(^[a-zA-Z0-9@\$=!:.#%]+$)/m', $value)) {
     		$this->error($attribute, self::RULE_PASSWORD);
     	}
+    }
+
+    private function validateUnique($attribute, $value, $rule)
+    {
+    	$pdo = MyConnection::getConnection()->pdo;
+		$class = $rule['class'];
+		$table = $class::tableName();
+
+		$stmt = "SELECT * FROM $table WHERE $attribute = :$attribute";
+		$stmt = $pdo->prepare($stmt);
+		$stmt->bindValue(":$attribute", $value);
+		$stmt->execute();
+
+		$record = $stmt->fetchObject();
+		$rule['unique'] = $value;
+		if ($record) {
+			$this->error($attribute, self::RULE_UNIQUE, $rule);
+		}
     }
 }

@@ -1,3 +1,10 @@
+<?php
+
+use optimy\app\core\Application;
+use optimy\app\core\Helper;
+
+?>
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -24,35 +31,74 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <a class="nav-link" href="/blog/foods">Foods</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/blog/places">Places</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/blog/sports">Sports</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/blog/people">People</a>
-          </li>
-        </ul>
-        <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-           <li class="nav-item">
-            <a class="nav-link" href="/login">Login</a>
-           </li>
-           <li class="nav-item">
-            <a class="nav-link" href="/register">Register</a>
-          </li>
-        </ul>
+        
+        <?php if (Application::isGuest()) : ?>
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="/foods">Foods</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/places">Places</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/sports">Sports</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/people">People</a>
+              </li>
+            </ul>
+            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+               <li class="nav-item">
+                <a class="nav-link" href="/login">Login</a>
+               </li>
+               <li class="nav-item">
+                <a class="nav-link" href="/register">Register</a>
+              </li>
+            </ul>
+
+        <?php else: ?>
+
+           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link" href="#">Welcome <?php echo Application::$app->user->displayName();  ?></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/blog">Create Blog</a>
+              </li>
+            </ul>
+            <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+               <li class="nav-item">
+                <a class="nav-link" href="/logout">Logout</a>
+               </li>
+            </ul>
+        <?php endif; ?>
+
       </div>
     </div>
   </nav>
+ 
+    <?php if (Application::$app->session->getFlash("success")): ?>
+    <div class="alert alert-success alert-dismissible fade show">
+      <?php echo Application::$app->session->getFlash("success") ?>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <?php endif; ?>
 
   <div class="container">
-    {{content}}
+    
+    <div class="content">
+       
+
+       {{content}}
+    
+
+    </div>
+  
   </div>
+
   <footer class="footer py-5 bg-dark mt-4">
     <div class="container">
         <p class="m-0 text-center text-white">Copyright &copy; 2020</p>
@@ -61,7 +107,7 @@
 
   <script src="../assets/js/jquery-3.5.0.js"></script>
   <script src="../assets/js/bootstrap.js"></script>
-  <script type="text/javascript" src="../js/script.js"></script>
+  <script type="text/javascript" src="../assets/js/script.js"></script>
     <!-- Option 1: Bootstrap Bundle with Popper -->
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
  -->
