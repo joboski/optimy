@@ -39,11 +39,9 @@
 
   <div class="container">
     
-    <div class="content">
-    
-
+    <div class="content shadow">
+      
        {{content}}
-
 
     </div>
 

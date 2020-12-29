@@ -14,6 +14,7 @@ use optimy\app\core\Application;
 class Router
 {
 	private const HTTP_RESPONSE_404 = 404;
+
 	protected $routes = [];
 	protected $request;
 	protected $response;
@@ -46,9 +47,9 @@ class Router
 
 		if ($callback === false) {
 			
-			$this->response->setStatusCode(HTTP_RESPONSE_404);
+			$this->response->setStatusCode(self::HTTP_RESPONSE_404);
 
-			return $render->content(HTTP_RESPONSE_404, null);
+			return $render->content(self::HTTP_RESPONSE_404, null);
 		}
 
 		if (is_string($callback)) {
