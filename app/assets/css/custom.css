@@ -5,10 +5,6 @@
   height: 50px;
 }
 
-.bottom_space {
-	margin-bottom: 40px;
-}
-
 .ceiling_space {
 	margin-top: 30px;
 }
@@ -23,4 +19,65 @@
 
 .spaces {
 	margin: 20px;
+}
+
+.not-found {
+	margin:auto;
+	width:50%;
+}
+
+.shadow {
+	height:initial;
+	border:1px solid #ddd;
+	box-shadow: inset 0 -20px 0 0 rgba(8, 8, 8, .5);
+	width: 60%;
+	border-radius: 8px;
+	margin: 20px auto 0;
+}
+
+.huge-center {
+	font-size: 10em;
+	padding: auto;
+	margin:80px auto 0;
+	/*border:1px solid #eee;*/
+	text-align: center;
+}
+
+.center {
+	position: relative;
+	padding:auto;
+	margin:auto;
+	text-align: center;
+}
+
+.auth-title {
+	padding:auto;
+	margin:10% 20% 5%;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.title {
+	padding:auto;
+	margin:2% 20%;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.auth-field {
+	position: relative;
+	width: 60%;
+	margin:3% auto;
+}
+
+.action {
+	text-align: left;
+	width:60%;
+	margin:2% auto;
+	padding:0 auto;
+}
+
+.margin-tb {
+	margin:20px auto;
+	width: 100%;
 }

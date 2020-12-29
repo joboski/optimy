@@ -23,7 +23,7 @@ class Select
 
 	public function __toString(){
 		return sprintf(
-			'<div class="bottom_space">
+			'<div class="margin-tb">
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                     <label class="input-group-text" for="%s">%s</label>
@@ -50,9 +50,4 @@ class Select
             $this->model->labels()[$this->options[3]]
         );
 	}
-
-    // public function selectField()
-    // {
-    //     return self::TYPE_SELECT;
-    // }
 }

@@ -20,7 +20,7 @@ class Textarea
 
     public function __toString(){
         return sprintf(
-            '<div class="bottom_space">
+            '<div class="margin-tb">
               <label class="label">
                 %s
               </label>
