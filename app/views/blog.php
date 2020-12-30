@@ -1,10 +1,16 @@
+<?php 
+use optimy\app\core\Application;
+
+if (Application::$app->user) 
+
+{ ?>
 
 <h2 class="title"> Tell your story </h2>
 <?php $form = optimy\app\core\form\Form::instance() ?>
     
 <?php echo $form->begin("", "post") ?>
 
-<?php echo $form->field($model, "title")->cssMargin(); ?>
+<?php echo $form->field($model, "title"); ?>
 <?php echo $form->textarea($model, "content"); ?>
 <?php echo $form->select($model, "category", ["foods", "sports", "places", "people"]); ?>
 
@@ -20,3 +26,13 @@
 <a class="btn btn-outline-danger" href="/">Cancel</a>
 
 <?php $form->end();?>
+
+<?php } else { ?>
+
+<div class="container center">
+	<h4 class="shadow">Unauthorized Access!</h4>
+</div>
+
+<?php } ?>
+
+
