@@ -32,7 +32,7 @@ class BlogController extends Controller
 	public function create(Request $request, Response $response)
 	{
 		$this->setLayout('main');
-
+		$id = $request->body()["id"] ?? null;
 		if (!$this->isAllowed()) {
 			Application::$app->session->setFlash("fail" , "Access denied!");
 			$response->redirect("/"); // home
@@ -40,6 +40,9 @@ class BlogController extends Controller
 		}
 		
 		if ($request->isPost()) {
+			if ($id) {
+				unset($request->body()["id"]);
+			}
 			$this->model = $this->loadData($request->body());
 			$this->model->userid = Application::$app->user->id;
 

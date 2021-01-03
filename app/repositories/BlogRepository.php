@@ -23,9 +23,9 @@ class BlogRepository extends Repository
 		return $this->insert($values);
 	}
 
-	public function updateBlog($blogId, $userId, $attributes, $newValues)
+	public function updateBlog($blogId, $userId, $newValues)
 	{
-		return $this->update($blogId, $userId, $attributes, $newValues);
+		return $this->update($blogId, $userId, $newValues);
 	}
 
 	public function deleteBlog($blogId)
@@ -48,5 +48,10 @@ class BlogRepository extends Repository
 	public function getBlogsByUser($userId)
 	{
 		return $this->findAll($userId);
+	}
+
+	public function setAttributes($attributes)
+	{
+		$this->attributes = $attributes;
 	}
 }
