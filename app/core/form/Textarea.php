@@ -24,13 +24,18 @@ class Textarea
               <label class="label">
                 %s
               </label>
-              <textarea class="form-control" name=%s id=%s aria-label="%s" rows="5">%s</textarea>
+              <textarea class="form-control %s" name=%s id=%s aria-label="%s" rows="5">%s</textarea>
+                <div class="invalid-feedback">
+                    %s
+                </div>
             </div>',
             $this->model->labels()[$this->attribute] ?? $this->attribute,
+            $this->model->hasError($this->attribute)? 'is-invalid' : '',
             $this->attribute, 
             $this->attribute,
             $this->model->labels()[$this->attribute] ?? $this->attribute,
-            $this->model->{$this->attribute}
+            $this->model->{$this->attribute},
+            $this->model->firstError($this->attribute)
         );
     }
 }

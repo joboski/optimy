@@ -30,7 +30,7 @@ class Blog extends Model
 				"type" => "unknown",
 				"required" => true,
 				"min" => 100,
-				"max" => 5000
+				"max" => 10000
 			],
 			"category" => [
 				"type" => "string",

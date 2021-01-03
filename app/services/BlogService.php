@@ -24,7 +24,11 @@ class BlogService
 	public function create()
 	{
 		$values = $this->getValues();
-		$values[0] = (int) Application::$app->user->id;
+		$values[1] = (int) Application::$app->user->id;
+		unset($values[0]);
+		unset($this->attributes[0]);
+		$this->repo->setAttributes($this->attributes);
+		// Helper::pre($values);
 
 		return $this->repo->save($values);
 	}
@@ -42,7 +46,9 @@ class BlogService
 		unset($this->attributes[1]);
 		unset($this->attributes[7]);
 
-		return $this->repo->updateBlog($blogId, $userId, $this->attributes, $values);
+		$this->repo->setAttributes($this->attributes);
+
+		return $this->repo->updateBlog($blogId, $userId, $values);
 	}
 
 	public function delete($id)

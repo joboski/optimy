@@ -106,7 +106,7 @@ abstract class Repository
 			array_map(function($a, $v) use ($stmt) {
 				$stmt->bindValue(":$a", $v);
 			}, $this->attributes, $values);
-		
+
 			$stmt->execute();
 		}
 		catch(PDOException $e)
@@ -117,12 +117,12 @@ abstract class Repository
 		return true;	
 	}
 
-	protected function update($blogId, $userId, $attributes, $values)
+	protected function update($blogId, $userId, $values)
 	{
 		// SQL: UPDATE <tablename> SET attr1=:attr1, attr2=:attr2, attr3=:attr3 WHERE id=:id;
 		$params = array_map(function($a){
 			return "$a = :$a";
-		}, $attributes);
+		}, $this->attributes);
 
 		try 
 		{
@@ -130,7 +130,7 @@ abstract class Repository
 
 			array_map(function($a, $v) use ($stmt) {
 				$stmt->bindValue(":$a", $v);
-			}, $attributes, $values);
+			}, $this->attributes, $values);
 
 			$stmt->bindValue(":id", $blogId);
 			$stmt->bindValue(":userid", $userId);

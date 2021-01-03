@@ -3,6 +3,7 @@
 namespace optimy\app\models;
 
 use optimy\app\connections\MyConnection;
+use optimy\app\core\Helper;
 
 abstract class Model
 {
@@ -87,6 +88,10 @@ abstract class Model
 	/* Load the data for persistence */
 	public function load($data)
 	{	
+		// Helper::pre($data);
+		if (empty($data)) {
+			return;
+		}
 		foreach ($data as $key => $value) {
 			// check if the property exists on this targeted model
 			if (property_exists($this, $key)) {
