@@ -16,8 +16,10 @@ class HomeController extends Controller
 	private const SPORT_TYPE = "sports";
 	private const PLACE_TYPE = "places";
 	private const PEOPLE_TYPE = "people";
+	private const CATEGORY_TYPE = "category";
 
 	private $model;
+	private $table;
 	private $service;
 
 	public function __construct()
@@ -28,9 +30,8 @@ class HomeController extends Controller
 	
 	public function getAll(Request $request)
 	{
-		$this->setLayout('main');
-		$table = $this->model->tableName();
-		$blogs = $this->service->getAllBlogs($table);
+		$this->setLayout('main');	
+		$blogs = $this->service->getAllBlogs();
 		
 		return $this->view("home", ["blogs" => $blogs]);
 	}
@@ -38,8 +39,7 @@ class HomeController extends Controller
 	public function getFoods()
 	{
 		$this->setLayout('main');
-		$table = $this->model->tableName();
-		$blogs = $this->service->getBlog($table, self::FOOD_TYPE);
+		$blogs = $this->service->getBlogsByType([self::CATEGORY_TYPE => self::FOOD_TYPE]);
 		
 		return $this->view("home", ["blogs" => $blogs]);
 	}
@@ -47,8 +47,7 @@ class HomeController extends Controller
 	public function getPlaces()
 	{
 		$this->setLayout('main');
-		$table = $this->model->tableName();
-		$blogs = $this->service->getBlog($table, self::PLACE_TYPE);
+		$blogs = $this->service->getBlogsByType([self::CATEGORY_TYPE => self::PLACE_TYPE]);
 		
 		return $this->view("home", ["blogs" => $blogs]);
 	}
@@ -56,8 +55,7 @@ class HomeController extends Controller
 	public function getSports()
 	{
 		$this->setLayout('main');
-		$table = $this->model->tableName();
-		$blogs = $this->service->getBlog($table, self::SPORT_TYPE);
+		$blogs = $this->service->getBlogsByType([self::CATEGORY_TYPE => self::SPORT_TYPE]);
 		
 		return $this->view("home", ["blogs" => $blogs]);
 	}
@@ -65,8 +63,7 @@ class HomeController extends Controller
 	public function getPeople()
 	{
 		$this->setLayout('main');
-		$table = $this->model->tableName();
-		$blogs = $this->service->getBlog($table, self::PEOPLE_TYPE);
+		$blogs = $this->service->getBlogsByType([self::CATEGORY_TYPE => self::PEOPLE_TYPE]);
 		
 		return $this->view("home", ["blogs" => $blogs]);
 	}

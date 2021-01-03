@@ -23,29 +23,37 @@ class Select
 
 	public function __toString(){
 		return sprintf(
-			'<div class="margin-tb">
-            <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                    <label class="input-group-text" for="%s">%s</label>
-                </div> 
-                <select class="custom-select" id="%s" name="%s">
-                    <option value="%s">%s</option>
-                    <option value="%s">%s</option>
-                    <option value="%s">%s</option>
-                    <option value="%s">%s</option>
-                </select>
-            </div>
+	       '<div class="margin-tb">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="%s">%s</label>
+                    </div> 
+                    <select class="custom-select" id="%s" name="%s">
+                        <option %s value="%s">%s</option>
+                        <option %s value="%s">%s</option>
+                        <option %s value="%s">%s</option>
+                        <option %s value="%s">%s</option>
+                    </select>
+                </div>
             </div>',
             $this->attribute,
             $this->model->labels()[$this->attribute] ?? $this->attribute, 
             $this->attribute,
             $this->attribute,
+
+            $this->model->{$this->attribute} === $this->options[0] ? "selected" : "",
             $this->options[0],
             $this->model->labels()[$this->options[0]],
+
+            $this->model->{$this->attribute} === $this->options[1] ? "selected" : "",
             $this->options[1],
             $this->model->labels()[$this->options[1]],
+
+            $this->model->{$this->attribute} === $this->options[2] ? "selected" : "",
             $this->options[2],
             $this->model->labels()[$this->options[2]],
+            
+            $this->model->{$this->attribute} === $this->options[3] ? "selected" : "",
 		    $this->options[3],
             $this->model->labels()[$this->options[3]]
         );

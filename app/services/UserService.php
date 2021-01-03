@@ -24,34 +24,30 @@ class UserService
 		// Helper::pre("Inside service save");
 		$this->model->password = password_hash($this->model->password, PASSWORD_DEFAULT);
 		$this->model->status = $this->model->defaultStatus();
-		// Helper::dump($model->status);
-		$attributes = $this->model->attributes();
-
+		$this->repo->setModel($this->model);
+		
 		$model = $this->model;
 		$values = array_map(function($a) use ($model){
 			return $model->{$a};
-		}, $attributes);
+		}, $this->model->attributes());
 		
-		return $this->repo->save($attributes, $values);
+		return $this->repo->save($values);
 	}
 
 	public function login($loginModel)
 	{
-		$user = $this->repo->findUser($loginModel->email);
+		$user = $this->repo->getUserObject($loginModel->email);
 
 		if (!$user) {
 			$loginModel->addError('email', 'User does not exist.');
-			// Helper::pre($this->model->errors);
 			return false;
 		}
 
 		if (!password_verify($loginModel->password, $user->password)) {
 			$loginModel->addError('password', 'Password for the Username is incorrect.');
 			$loginModel->addError('email', 'Username for the Password is incorrect.');
-			// Helper::pre("Password failed");
 			return false;
 		}
-		// Application::$app->session->set("user", $user->id);
 		Application::$app->login($user);
 
 		return true;

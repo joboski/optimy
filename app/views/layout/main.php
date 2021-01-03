@@ -91,6 +91,13 @@ use optimy\app\core\Helper;
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
+    <?php elseif (optimy\app\core\Application::$app->session->getFlash("fail")): ?>
+     <div class="alert alert-warning alert-dismissible fade show">
+      <?php echo optimy\app\core\Application::$app->session->getFlash("fail") ?>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
     <?php endif; ?>
 
   <div class="container">

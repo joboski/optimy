@@ -13,8 +13,6 @@ class Field
 	protected $css;
 
 	protected const TYPE_TEXT = "text";
-	protected const TYPE_PASSWORD = "password";
-	protected const TYPE_NUMBER = "number";
 
 	public function __construct(Model $model, $attribute){
 		$this->model = $model;
@@ -42,21 +40,15 @@ class Field
 		);
 	}
 
-	public function passwordField()
+	public function fieldType($type)
 	{
-		$this->type = self::TYPE_PASSWORD;
+		$this->type = $type;
 		return $this;
 	}
 
-	public function numberField()
+	public function cssStyle($style)
 	{
-		$this->type = self::TYPE_NUMBER;
-		return $this;
-	}
-
-	public function cssStyle()
-	{
-		$this->css = "auth-field";
+		$this->css = $style;
 		return $this;
 	}
 }

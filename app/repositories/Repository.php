@@ -14,116 +14,98 @@ abstract class Repository
 	protected $results;
 	protected $count;
 	protected $model;
+	protected $table;
+	protected $attributes;
 
-	private function prepare($sql)
+	private const ACTION_FIND = "find",
+				  ACTION_INSERT = "insert",
+				  ACTION_UPDATE = "update",
+				  ACTION_DELETE = "delete";	 
+
+	/** 
+		@actions 
+		findAll: SELECT * FROM $table WHERE attr1 =:attr1 AND attr2 =:attr2 AND attr3 =:attr3
+
+		find: SELECT * FROM $table WHERE attr =:attr
+
+		insert: INSERT INTO $table (attr1, attr2, attr3) VALUES (:attr1, :attr2, :attr3);
+
+		update: UPDATE $table SET attr1=:attr1, attr2=:attr2, attr3=:attr3 WHERE id=:id;
+
+		delete: DELETE FROM $table WHERE id =:id
+
+
+	*/
+	private function prepareQuery($sql, $whereClause)
 	{
-		return $this->pdo->prepare($sql);
-	}
-
-	private function prepareStatement(string $table, array $whereClause) {
-		$attributes = array_keys($whereClause);
-
-		// SELECT * FROM $table WHERE email = :email AND firstname = :firstname....
-		$where = implode("AND ",array_map(function($a){
-			return "$a = :$a";
-		}, $attributes));
-
-		$stmt = self::prepare("SELECT * FROM $table WHERE $where");
-
-		foreach ($whereClause as $key => $value) {
-			// Helper::pre($value));
-			$stmt->bindValue(":$key", $value);
-		}
-
-		return $stmt;
-	}
-
-	protected function get(string $table, string $category)
-	{
-		try
-		{
-			$stmt = self::prepare("SELECT * FROM $table WHERE category = :category");
-			$stmt->bindValue(":category", $category);
-			$stmt->execute();
-			return $stmt->fetchAll(PDO::FETCH_OBJ);
-		}
-		catch (PDOException $e)
-		{
-			echo 'Connection failed: ' . $e->getMessage();
-    		exit;
-		}
-	}
-
-	protected function fetchAll(string $table)
-	{
-		try
-		{
-			$stmt = self::prepare("SELECT * FROM $table");
-			$stmt->execute();
-			return $stmt->fetchAll(PDO::FETCH_OBJ);
-		}
-		catch (PDOException $e)
-		{
-			echo 'Connection failed: ' . $e->getMessage();
-    		exit;
-		}
-	}
-
-	protected function find(string $table, array $whereClause)
-	{
-		try
-		{
-			$stmt = self::prepareStatement($table, $whereClause);
-			$stmt->execute();
-			$this->results = $stmt->fetchAll(PDO::FETCH_OBJ);
-		}
-		catch (PDOException $e)
-		{
-			echo 'Connection failed: ' . $e->getMessage();
-    		exit;
-		}
-
-		if ($this->results) {
-			return $this->results;	
-		}
-
-		return false;
-	}
-
-	protected function findOne(string $table, array $whereClause)
-	{
-		// Helper::pre("Inside find one");
-		try
-		{
-			$stmt = $this->prepareStatement($table, $whereClause);
-			$stmt->execute();
-			$this->results = $stmt->fetchObject(get_class($this->model));
-
-			return $this->results;
-		}
-		catch (PDOException $e)
-		{
-			echo 'Connection failed: ' . $e->getMessage();
-    		exit;
+		if (empty($whereClause)) {
+			$this->query = $sql;
+			$this->query = $this->pdo->prepare($this->query);
+			return;
 		}
 		
-		return false;
+		$where = implode(" AND ",array_map(function($a){
+			return "$a = :$a";
+		}, array_keys($whereClause)));
+		
+		$this->query = "{$sql} WHERE {$where}";
+		$this->query = $this->pdo->prepare($this->query);
+		foreach ($whereClause as $key => $value) {
+			$this->query->bindValue(":$key", $value);
+		}	
 	}
 
-	protected function insert($table, $attributes, $values)
+	protected function findAll($attributes)
 	{
-		$params = array_map(function($a){
-			return $a = ":$a";
-		}, $attributes);
+		$sql = "SELECT * FROM $this->table";
 
 		try 
 		{
-			$stmt = self::prepare("INSERT INTO  $table (" . implode(',', $attributes) . ") 
-			VALUES(". implode(',', $params) .")");
+			$this->prepareQuery($sql, $attributes);
+			$this->query->execute();
+			$this->results = $this->query->fetchAll(PDO::FETCH_OBJ);
+		}
+		catch (PDOException $e)
+		{
+			echo 'Connection failed: ' . $e->getMessage();
+    		exit;
+		}
+
+		return $this->results;
+	}
+
+	protected function findOne($whereClause)
+	{
+		$sql = "SELECT * FROM $this->table";
+		try 
+		{
+			$this->prepareQuery($sql, $whereClause);
+			$this->query->execute();
+		}
+		catch (PDOException $e)
+		{
+			echo 'Connection failed: ' . $e->getMessage();
+    		exit;
+		}
+
+		return $this->query;
+	}
+
+	protected function insert(array $values)
+	{
+		// SQL: INSERT INTO <tablename> (attr1, attr2, attr3) VALUES (:attr1, :attr2, :attr3);
+		$holders = array_map(function($a){
+			return $a = ":$a";
+		}, $this->attributes);
+
+		try 
+		{
+			$stmt = $this->pdo->prepare("INSERT INTO $this->table (" . implode(',', $this->attributes) . ") 
+			VALUES(". implode(',', $holders) .")");
 
 			array_map(function($a, $v) use ($stmt) {
 				$stmt->bindValue(":$a", $v);
-			}, $attributes, $values);
+			}, $this->attributes, $values);
 		
 			$stmt->execute();
 		}
@@ -135,33 +117,47 @@ abstract class Repository
 		return true;	
 	}
 
-	protected function update(string $table, array $whereClause)
+	protected function update($blogId, $userId, $attributes, $values)
 	{
-		// TODO
-	}
+		// SQL: UPDATE <tablename> SET attr1=:attr1, attr2=:attr2, attr3=:attr3 WHERE id=:id;
+		$params = array_map(function($a){
+			return "$a = :$a";
+		}, $attributes);
 
-	protected function delete(string $table, string $whereClause)
-	{
-		// TODO
-	}
-
-	public function findById($table, $id)
-	{
-		try
+		try 
 		{
-			$stmt = self::prepare("SELECT * FROM $table WHERE id = $id");
+			$stmt = $this->pdo->prepare("UPDATE $this->table SET " . implode(', ', $params) . " WHERE id =:id AND userid =:userid");
+
+			array_map(function($a, $v) use ($stmt) {
+				$stmt->bindValue(":$a", $v);
+			}, $attributes, $values);
+
+			$stmt->bindValue(":id", $blogId);
+			$stmt->bindValue(":userid", $userId);
 			$stmt->execute();
-			$this->results = $stmt->fetchObject(get_class($this->model));
-			
-			return $this->results;
 		}
-		catch (PDOException $e)
+		catch(PDOException $e)
 		{
 			echo 'Connection failed: ' . $e->getMessage();
     		exit;
 		}
-		
-		return false;
+		return true;
 	}
 
+	protected function delete(int $id)
+	{
+		//SQL "DELETE FROM <tablename> WHERE id = :id LIMIT 1"
+		try
+		{
+			$stmt = $this->pdo->prepare("DELETE FROM $this->table WHERE id = :id LIMIT 1");
+			$stmt->bindValue(":id", $id);
+			$stmt->execute();
+		}
+		catch(PDOException $e)
+		{
+			echo 'Connection failed: ' . $e->getMessage();
+    		exit;
+		}
+		return true;
+	}
 }

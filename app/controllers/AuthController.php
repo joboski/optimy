@@ -33,7 +33,6 @@ class AuthController extends Controller
 
 		$this->setLayout('auth');
 
-		// Helper::pre($this->request->body());
 		$this->userModel->load($this->request->body());
 		$this->service = new UserService($this->userModel);
 

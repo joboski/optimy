@@ -20,10 +20,13 @@ $app->router->get("/places", [HomeController::class, "getPlaces"]);
 $app->router->get("/sports", [HomeController::class, "getSports"]);
 $app->router->get("/people", [HomeController::class, "getPeople"]);
 
-
 // Blog routes
 $app->router->get("/blog", [BlogController::class, "create"]);
 $app->router->post("/blog", [BlogController::class, "create"]);
+$app->router->get("/blog/update", [BlogController::class, "update"]);
+$app->router->post("/blog/update", [BlogController::class, "update"]);
+$app->router->get("/blog/delete", [BlogController::class, "delete"]);
+
 
 // User routes
 $app->router->get("/logout", [AuthController::class, "logout"]);

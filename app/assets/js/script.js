@@ -4,3 +4,5 @@ $('input[type="file"]').change(function(e){
     //replace the "Choose a file" label
     $('.custom-file-label').html(fileName);
 });
+
+$(".alert").delay(3000).slideUp(900);

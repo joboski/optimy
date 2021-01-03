@@ -18,13 +18,15 @@ class BlogController extends Controller
 {
 	private $service;
 	private $model;
+	private $uploadDir;
+	private $uploadFile;
 
 	public function __construct()
 	{
 		// Helper::pre("inside BLOG Controller");
 		$this->model = new Blog();
 		$this->service = new BlogService($this->model);
-
+		$this->uploadDir = Application::$ROOT_PATH . "/app/assets/uploads/";
 	}
 
 	public function create(Request $request, Response $response)
@@ -32,59 +34,89 @@ class BlogController extends Controller
 		$this->setLayout('main');
 		
 		if ($request->isPost()) {
-			// for uploaded file
-			if ($_FILES) {
-				$uploadDir = Application::$ROOT_PATH . "/app/assets/uploads/";
-				$uploadFile = $uploadDir . $_FILES["filename"]["name"];
-				// Helper::pre($uploadFile);
-				// Checking the MIME type
-			    $extension = in_array($_FILES["filename"]["type"], [
-			    	"image/jpeg",
-			    	"image/png",
-			    	"image/gif",
-			    	"image/tiff"
-			    ]);
-
-				try {
-
-					if ($_FILES["filename"]["error"] != 0 && isset($_FILES["filename"]["error"])) {
-						throw new RuntimeException("Invalid parameters");
-					}
-					// Checking filesize here.
-				    if ($_FILES["filename"]["size"] > 100000) {
-				        throw new RuntimeException('Exceeded filesize limit.');
-				    }
-
-				    if (!$extension) {
-				    	throw new RuntimeException('Invalid file format.');
-				    }
-
-				} catch (RuntimeException $e) {
-					echo $e->getMessage();
-				}
-			}
-
-			// Helper::pre(Application::$app->user->id);
-			$this->model->load($request->body());
+			$this->model = $this->loadData($request->body());
 			$this->model->userid = Application::$app->user->id;
-			$this->model->filename = $_FILES["filename"]["name"];
 			
-			// Helper::pre($request->body());
-			// Helper::pre($this->model->validate());
-
 			if ($this->model->validate() && $this->service->create()) {
 
-				move_uploaded_file($_FILES["filename"]["tmp_name"], $uploadFile);
+				move_uploaded_file($_FILES["filename"]["tmp_name"], $this->uploadFile);
 				Application::$app->session->setFlash("success" , "Blog has been created");
 				$response->redirect("/"); // home
 				exit;
 			}
 			Application::$app->session->setFlash("fail" , "Failed to create blog.");
-			// Display the blog form
 			return $this->view("blog", ["model" => $this->model]);
 		}
-
-		// Display the blog form 
 		return $this->view("blog", ["model" => $this->model]);
+	}
+
+	public function update(Request $request, Response $response)
+	{
+		$blog = $this->service->getBlogById(["id" => $request->body()["id"]]);
+		// pre-populating the form
+		$this->model->load($blog);
+
+		if ($request->isPost()) {
+			$this->model = $this->loadData($request->body());
+			if ($this->model->validate() && $this->service->update()) {
+
+				move_uploaded_file($_FILES["filename"]["tmp_name"], $this->uploadFile);
+				Application::$app->session->setFlash("success" , "Blog has been updated");
+				$response->redirect("/"); // home
+				exit;
+			}
+			Application::$app->session->setFlash("fail" , "Failed to create blog.");
+			return $this->view("blog", ["model" => $this->model]);
+		}
+		
+		return $this->view("blog", ["model" => $this->model]);
+	}
+
+	public function delete(Request $request, Response $response)
+	{
+		if ($this->service->delete($request->body()["id"])) {
+			Application::$app->session->setFlash("success" , "Blog has been deleted");
+			$response->redirect("/"); // home
+			exit;
+		}
+		Application::$app->session->setFlash("fail" , "Failed to delete blog.");
+		$response->redirect("/");
+	}
+
+	private function loadData($data)
+	{
+		if (!empty($_FILES["filename"])) {
+			$this->uploadFile = $this->uploadDir . $_FILES["filename"]["name"];
+			// Checking the MIME type
+		    $extension = in_array($_FILES["filename"]["type"], [
+		    	"image/jpeg",
+		    	"image/png",
+		    	"image/gif",
+		    	"image/tiff"
+		    ]);
+
+			try {
+
+				if ($_FILES["filename"]["error"] != 0 && isset($_FILES["filename"]["error"])) {
+					throw new RuntimeException("Invalid parameters");
+				}
+				
+			    if ($_FILES["filename"]["size"] > 1000000) {
+			        throw new RuntimeException('Exceeded filesize limit.');
+			    }
+
+			    if (!$extension) {
+			    	throw new RuntimeException('Invalid file format.');
+			    }
+
+			} catch (RuntimeException $e) {
+				echo $e->getMessage();
+			}
+		}
+
+		$this->model->load($data);
+		$this->model->filename = $_FILES["filename"]["name"] ?? null;
+
+		return $this->model;
 	}
 }
