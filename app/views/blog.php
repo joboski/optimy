@@ -2,10 +2,7 @@
 use optimy\app\core\Application;
 use optimy\app\core\Helper;
 
-$path = Application::$app->request->path();
-// Helper::pre($model);
-
-if (Application::$app->user) { ?>
+$path = Application::$app->request->path(); ?>
 
 <h2 class="title"> Tell your story </h2>
 <?php $form = optimy\app\core\form\Form::instance() ?>
@@ -31,13 +28,3 @@ if (Application::$app->user) { ?>
 <a class="btn btn-outline-danger" href="/">Cancel</a>
 
 <?php $form->end();?>
-
-<?php } else { ?>
-
-<div class="container center">
-	<h4 class="shadow">Unauthorized Access!</h4>
-</div>
-
-<?php } ?>
-
-

@@ -32,11 +32,17 @@ class BlogController extends Controller
 	public function create(Request $request, Response $response)
 	{
 		$this->setLayout('main');
+
+		if (!$this->isAllowed()) {
+			Application::$app->session->setFlash("fail" , "Access denied!");
+			$response->redirect("/"); // home
+			exit;
+		}
 		
 		if ($request->isPost()) {
 			$this->model = $this->loadData($request->body());
 			$this->model->userid = Application::$app->user->id;
-			
+
 			if ($this->model->validate() && $this->service->create()) {
 
 				move_uploaded_file($_FILES["filename"]["tmp_name"], $this->uploadFile);
@@ -52,7 +58,14 @@ class BlogController extends Controller
 
 	public function update(Request $request, Response $response)
 	{
-		$blog = $this->service->getBlogById(["id" => $request->body()["id"]]);
+		if (!$this->isAllowed()) {
+			Application::$app->session->setFlash("fail" , "Access denied!");
+			$response->redirect("/"); // home
+			exit;
+		}
+
+		$id = $request->body()["id"] ?? null;
+		$blog = $this->service->getBlogById(["id" => $id]);
 		// pre-populating the form
 		$this->model->load($blog);
 
@@ -74,6 +87,12 @@ class BlogController extends Controller
 
 	public function delete(Request $request, Response $response)
 	{
+		if (!$this->isAllowed()) {
+			Application::$app->session->setFlash("fail" , "Access denied!");
+			$response->redirect("/"); // home
+			exit;
+		}
+
 		if ($this->service->delete($request->body()["id"])) {
 			Application::$app->session->setFlash("success" , "Blog has been deleted");
 			$response->redirect("/"); // home
@@ -118,5 +137,10 @@ class BlogController extends Controller
 		$this->model->filename = $_FILES["filename"]["name"] ?? null;
 
 		return $this->model;
+	}
+
+	private function isAllowed()
+	{
+		return !empty(Application::$app->user);
 	}
 }
