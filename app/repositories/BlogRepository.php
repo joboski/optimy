@@ -5,29 +5,48 @@ namespace optimy\app\repositories;
 use optimy\app\connections\MyConnection;
 use optimy\app\models\Blog;
 use optimy\app\repositories\Repository;
+use PDO;
 
 class BlogRepository extends Repository 
 {
-	public function __construct()
+	protected $model;
+
+	public function __construct(Blog $model)
 	{
 		$this->pdo = MyConnection::getConnection()->pdo;
+		$this->model = $model;
+		$this->table = $this->model->tableName();
+		$this->attributes = $this->model->attributes();
 	}
 
-	public function save($table, $attributes, $values) {
-		return $this->insert($table, $attributes, $values);
+	public function save($values) {
+		return $this->insert($values);
 	}
 
-	public function getAll($table) {
-		return $this->fetchAll($table);
-	}
-
-	public function getBlogByType($table, $type)
+	public function updateBlog($blogId, $userId, $attributes, $newValues)
 	{
-		return $this->get($table, $type);
+		return $this->update($blogId, $userId, $attributes, $newValues);
 	}
 
-	public function getAllByUser($table, $userId)
+	public function deleteBlog($blogId)
 	{
-		// TODO:
+		return $this->delete($blogId);
+	}
+
+	public function getBlog($id)
+	{
+		$stmt = $this->findOne($id);
+		$blog = $stmt->fetch(PDO::FETCH_ASSOC);
+
+		return $blog;
+	}
+
+	public function getBlogs($category = null) {
+		return $this->findAll($category);
+	}
+
+	public function getBlogsByUser($userId)
+	{
+		return $this->findAll($userId);
 	}
 }

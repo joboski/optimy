@@ -9,18 +9,19 @@ class Blog extends Model
 	private const TABLE_NAME = "blogs";
 	private const PRIMARY_KEY = "id";
 
+	public $id;
 	public $userid;
 	public $title;
 	public $content;
 	public $filename;
 	public $category;
-	public $createdAt;
+	public $created_at;
 
 	public function rules()
 	{
 		return [
 			"title" => [
-				"type" => "string",
+				"type" => "none",
 				"required" => true,
 				"min" => "3",
 				"max" => "50"
@@ -30,11 +31,6 @@ class Blog extends Model
 				"required" => true,
 				"min" => 100,
 				"max" => 5000
-			],
-			"filename" => [
-				"type" => "string",
-				"required" => false,
-				"image" => true
 			],
 			"category" => [
 				"type" => "string",
@@ -69,6 +65,6 @@ class Blog extends Model
 
 	public function attributes()
 	{
-		return ["userid", "title", "content", "filename", "category"];
+		return ["id", "userid", "title", "content", "filename", "category", "created_at", "updated_at"];
 	}	
 }

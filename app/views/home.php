@@ -1,6 +1,8 @@
 <?php 
 	use optimy\app\core\Application;
 	use optimy\app\core\Helper;
+
+	$userId = Application::$app->user->id ?? false;
 ?>
 <?php if (empty($blogs)) { ?>
 	<header class="jumbotron mt-4 mx-auto mb-12">
@@ -22,7 +24,7 @@
 
 	<div class="col-lg-3 col-md-6 mb-4 mt-2">
 		<div class="card">
-			<img class="card-img-top" src='<?php echo "/../assets/uploads/" .  $blog->filename ?>' alt="<?php echo $blog->filename?>">
+			<img class="card-img-top" src='<?php echo $blog->filename ? "/../assets/uploads/".$blog->filename : "https://via.placeholder.com/300?text=Image+goes+Here" ?>' alt="image">
 			<div class="card-body">
 			    <h5 class="card-title"><?php echo $blog->title ?></h5>
 			    <p class="card-text short"><?php echo $blog->content ?></p>
@@ -42,10 +44,14 @@
 	        </button>
 	      </div>
 	      <div class="modal-body">
-	      	<img class="img" src='<?php echo "/../assets/uploads/" .  $blog->filename ?>' alt="<?php echo $blog->filename?>" width=465>
+	      	<img class="img" src='<?php echo $blog->filename ? "/../assets/uploads/".$blog->filename : "https://via.placeholder.com/300?text=Image+goes+Here" ?>' width=465>
 	        <?php echo $blog->content ?>
 	      </div>
 	      <div class="modal-footer">
+	      	<?php if ($userId && $blog->userid === $userId) { ?>
+		      	<a type="button" class="btn btn-primary" href="blog/update?id=<?php echo $blog->id ?>">Update</a>
+		      	<a type="button" class="btn btn-danger" href="blog/delete?id=<?php echo $blog->id ?>">Delete</a>
+		    <?php } ?>
 	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 	      </div>
 	    </div>

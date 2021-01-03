@@ -26,6 +26,10 @@
 	width:50%;
 }
 
+.no-display {
+	display: none;
+}
+
 .shadow {
 	height:initial;
 	border:1px solid #ddd;

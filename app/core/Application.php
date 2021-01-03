@@ -35,12 +35,9 @@ class Application
 
 		$value = $this->session->get('user');
 
-		// Helper::pre("Application");
 		if ($value) {
-			// Helper::pre("Inside value");
 			$this->user = new $class;
 			$key = $this->user->primaryKey();
-
 			$this->userRepo = new $repo($this->user);
 			$this->user = $this->userRepo->findUserById($value);
 		}	
@@ -68,8 +65,6 @@ class Application
 		self::$ROOT_PATH = $rootPath;
 	}
 
-	
-
 	public function getController()
 	{
 		return $this->controller;
@@ -82,9 +77,7 @@ class Application
 
 	public function login($user)
 	{
-		// Helper::pre("Inside Application Login");
 		$this->user = $user;
-		// Helper::pre($this->user);
 		$primaryKey = $this->user->primaryKey();
 		$value = $user->{$primaryKey};
 

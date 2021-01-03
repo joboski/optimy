@@ -45,11 +45,6 @@ class Request
 	 */
 	public function body()
 	{
-		// Helper::pre($_POST);
-		$method = $this->method();
-
-		$body = Input::clean($method);
-
-		return $body;
+		return Input::clean($this->method());
 	}
 }
